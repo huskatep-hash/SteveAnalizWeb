@@ -1,0 +1,45 @@
+Replit blog yapısını production hosting’e taşımak için (Render, VPS, Docker)
+“Steve Analiz.web için steveanalizweb adlı bir Replit Node.js + Express blog projesi var.
+Bu projede:
+server.js → GET /blog, GET /api/blogs, POST /api/blog endpoint’leri var.
+blogs.json → blog verileri (JSON array) olarak saklanıyor.
+public/ → index.html, blog.html, css/style.css, js/script.js ile frontend.
+package.json → express ve body-parser gibi bağımlılıklar.
+Replit URL’i: https://20909a63-8417-458b-9f6b-54b22717d8f2-00-104i45nv5mapc.riker.replit.dev
+Daha sonra Dify AI workflow’undan HTTP POST ile https://...replit.dev/api/blog adresine blog yazısı gönderiliyor.
+Şimdi bu projeyi production hosting’e taşımak istiyorum.
+Sen, bu taşıma planını adım‑adım yaz ve gerekli kodu da üret.
+Aşama 1: Replit → GitHub’a taşı
+Replit’ten projeyi GitHub’a steveanalizweb isimli repo’ya push et.
+gitignore dosyası ile node_modules, .env, .replit gibi Replit‑spesifik dosyaları ignore et.
+blog.json dosyası ile public/ klasörünü repo’ya dahil et.
+package.json içinde scripts kısmına start ve dev script’leri ekle.
+Aşama 2: Production hosting seçimi ve konfigürasyonu
+Render / Railway (veya VPS) ile Node.js uygulaması başlat.
+GitHub repo’yu bağlay, server.js’yi app.js veya index.js olarak seç.
+PORT env. değişkenini kullan.
+blogs.json dosyasını static veya public klasörüne taşı;
+Daha sonra SQLite veya PostgreSQL gibi bir veritabanı ile blogs.json yerine daha güçlü bir veri tabanı entegre et.
+Aşama 3: API’yi sécurize ve Dify entegrasyonu
+POST /api/blog rotası, API_KEY veya JWT token ile korunmalı.
+CORS politikalarını allow edilen host’lara ve Dify’e uygun şekilde ayarla.
+/api/blogs ve /api/blog/:slug rotaları herkese açık olabilir.
+Dify workflow’unda HTTP Request Node ile https://steveanalizweb.onrender.com/api/blog veya https://...yourvps.com/api/blog’e POST ile blog yazısı gönder.
+Aşama 4: Logging ve monitoring
+logs klasörüne app.log dosyası aç; console.log çıktıları buraya yazdır.
+crontab ile daily yedekleme script’i kur.
+nginx reverse proxy + Let’s Encrypt SSL ile https://steveanalizweb.com domain’ini server.js’e bağla.
+Aşama 5: Gerekli kodlar
+server.js (production’da güncellenmiş versiyon, blogs.json yerine SQLite/PostgreSQL)
+package.json + package-lock.json
+render.yaml veya Dockerfile
+nginx konfigürasyonu
+environment variables listesi
+crontab script’i
+Docker-compose.yml (isteğe bağlı)
+Bana Replit AI Assistant’ına doğrudan yapıştırabileceğim şekilde,
+her adımda kod örnekleri ve
+step‑by‑step configuration
+ver.”
+Bu prompt’u Replit AI Assistant’ına yapıştır, o Render / VPS’de blog servisini kuracak kodları ve yapılandırmaları üretir.
+Daha sonra Dify workflow’unda HTTP Request Node ile POST /api/blog’a https://steveanalizweb.onrender.com/api/blog veya https://...yourvps.com/api/blog’e blog yazıları gönderirsin.
