@@ -1,0 +1,35 @@
+# ============================================================
+# Steve Analiz.web — Render.com Blueprint
+# Deploy: connect your GitHub repo at render.com → "New Blueprint"
+# ============================================================
+
+databases:
+  - name: steveanalizweb-db
+    databaseName: steveanalizweb
+    plan: free           # upgrade to starter/standard for production
+    user: steveanalizweb
+
+services:
+  - type: web
+    name: steveanalizweb-api
+    runtime: node
+    plan: free           # upgrade for more resources
+    buildCommand: >
+      npm install -g pnpm@9 &&
+      pnpm install --frozen-lockfile &&
+      BASE_PATH=/ PORT=3000 NODE_ENV=production pnpm --filter @workspace/steve-analiz run build &&
+      pnpm --filter @workspace/api-server run build &&
+      cp -r artifacts/steve-analiz/dist/public artifacts/api-server/dist/public
+    startCommand: node --enable-source-maps artifacts/api-server/dist/index.mjs
+    healthCheckPath: /api/healthz
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+      - key: DATABASE_URL
+        fromDatabase:
+          name: steveanalizweb-db
+          property: connectionString
+      - key: SESSION_SECRET
+        generateValue: true

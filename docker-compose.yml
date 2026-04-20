@@ -1,0 +1,53 @@
+# ============================================================
+# Steve Analiz.web — VPS / Local Docker Compose
+# Usage: docker compose up -d
+# ============================================================
+version: "3.9"
+
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: steveanalizweb
+      POSTGRES_USER: steveanalizweb
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U steveanalizweb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      DATABASE_URL: postgres://steveanalizweb:${DB_PASSWORD}@db:5432/steveanalizweb
+      SESSION_SECRET: ${SESSION_SECRET}
+    ports:
+      - "3000:3000"
+    # Optionally put nginx in front for SSL:
+    # Remove the ports block above and use the nginx service below
+
+  # ── Optional nginx reverse proxy (uncomment for SSL / custom domain) ──
+  # nginx:
+  #   image: nginx:alpine
+  #   restart: unless-stopped
+  #   depends_on:
+  #     - api
+  #   ports:
+  #     - "80:80"
+  #     - "443:443"
+  #   volumes:
+  #     - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+  #     - /etc/letsencrypt:/etc/letsencrypt:ro
+
+volumes:
+  pgdata:

@@ -1,0 +1,10 @@
+# Don't send these to Docker build context
+node_modules
+**/node_modules
+**/dist
+**/.replit-artifact
+.git
+.local
+attached_assets
+*.log
+.env
