@@ -3,13 +3,15 @@ info:
   # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: Steve Analiz.web API specification
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: blog
+    description: Blog post operations
 paths:
   /healthz:
     get:
@@ -24,6 +26,89 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+  /blog:
+    get:
+      operationId: listBlogPosts
+      tags: [blog]
+      summary: List all blog posts
+      description: Returns all blog posts ordered by newest first
+      parameters:
+        - name: tag
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filter posts by tag
+      responses:
+        "200":
+          description: List of blog posts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BlogPost"
+    post:
+      operationId: createBlogPost
+      tags: [blog]
+      summary: Create a new blog post
+      description: Adds a new blog post to the platform
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateBlogPostBody"
+      responses:
+        "201":
+          description: Created blog post
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BlogPost"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /blog/{slug}:
+    get:
+      operationId: getBlogPost
+      tags: [blog]
+      summary: Get a single blog post by slug
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Blog post
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BlogPost"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /blog/stats:
+    get:
+      operationId: getBlogStats
+      tags: [blog]
+      summary: Get blog statistics
+      description: Returns counts by tag and total post count
+      responses:
+        "200":
+          description: Blog statistics
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BlogStats"
 components:
   schemas:
     HealthStatus:
@@ -33,4 +118,81 @@ components:
           type: string
       required:
         - status
-
+    BlogPost:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        slug:
+          type: string
+        author:
+          type: string
+        summary:
+          type: string
+        content:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - title
+        - slug
+        - author
+        - summary
+        - content
+        - tags
+        - createdAt
+        - updatedAt
+    CreateBlogPostBody:
+      type: object
+      properties:
+        title:
+          type: string
+        slug:
+          type: string
+        author:
+          type: string
+        summary:
+          type: string
+        content:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+      required:
+        - title
+        - slug
+        - author
+        - summary
+        - content
+        - tags
+    BlogStats:
+      type: object
+      properties:
+        totalPosts:
+          type: integer
+        tagCounts:
+          type: object
+          additionalProperties:
+            type: integer
+      required:
+        - totalPosts
+        - tagCounts
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+      required:
+        - error

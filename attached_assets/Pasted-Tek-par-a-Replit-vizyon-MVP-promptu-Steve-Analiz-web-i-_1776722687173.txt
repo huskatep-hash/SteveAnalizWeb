@@ -1,0 +1,64 @@
+Tek parça “Replit vizyon + MVP” promptu
+“Steve Analiz.web için bir evrimsel vizyon planı çiz ve ardından Replit’deki MVP’yi (web + API) adım adım oluştur.
+1. ÖNCE: Prompt 5 – Evrimsel vizyon planı
+Steve Analiz.web’in dört aşamalı evrimsel bir proje olduğunu açıklayan bir vizyon planı yaz.
+Aşama 1: Replit MVP
+Replit’de Node.js + Express kullanılarak bir web sitesi ve API’yi kuruluyor.
+Web sayfaları:
+/ (Home):
+Başlık: Geleceğe Yönelik Finansal Analiz Platformu
+Alt başlık: STEVE ANALİZ.WEB 2.0
+Açıklama 1:
+Steve Analiz.web, finansal piyasalarda bilgiye dayalı karar almayı demokratikleştirmeyi amaçlayan bir finansal analiz platformudur. Geniş veri kümeleri ve yapay zeka destekli öngörülerle genç yatırımcıları güçlendirmek üzerine kurulmuştur.
+Açıklama 2:
+Web 2.0 prensipleri doğrultusunda, ‘Açık Zihniyet’ yaklaşımıyla kullanıcıların fikirlerini paylaşabileceği ve analiz ekosistemine katkıda bulunduğu bir platformdur.
+Açıklama 3:
+YouTube kanalı: steveanaliz web – Financial Technologies and Investment Analysis ile birlikte, finans, teknoloji ve yatırım alanlarında genç yazarlar için bir içerik ve yazar platformu olmayı hedefler.
+Buton 1: Blog’a Git → /blog
+Buton 2: YouTube Kanalına Git → https://youtube.com/@steveanalizweb
+/blog (Blog listesi):
+Başlık: Blog & Analizler
+Açıklama:
+Steve Analiz.web’in finansal analiz, kripto, makro ekonomi ve yatırım stratejileri üzerine yazılmış blog ve analizlerini buradan takip edebilirsin.
+3–5 adet örnek blog kutusu (başlık, kısa özet, Devamını Oku butonu).
+/about (Vizyon):
+Başlık: Vizyonumuz
+İçerik:
+STEVE ANALİZ.WEB 2.0, genç yatırımcıların, yazanların ve analiz sevenlerin bir araya geldiği bir bilgi ve fikir paylaşımı platformudur.
+Yapay zeka destekli araçlarla finansal verileri inceleyerek analizler üretir, bu sayede daha erişilebilir bir finansal okuryazarlık ortamı oluşturmayı hedefler.
+Geleceğin Vizyonerleri adı altında finans, teknoloji ve yatırım alanlarında genç yazarların içeriklerini paylaşmasına destek olur.
+Devrim Çağlayan, SteveAnaliz.web
+API:
+GET / → public/index.html
+GET /blog → public/blog.html
+GET /about → public/about.html
+POST /api/blog → yeni bir blog yazısı ekler (örnek: { title, slug, author, tags, content }).
+Scaling:
+Replit’de başlangıç fazında düşük trafik ve Dify entegrasyonu için uygun bir yapı.
+Aşama 2: Dify Entegrasyonu
+Replit’deki API’ye bağlanan bir Dify workflow’u kuruluyor.
+Dify’de:
+Finansal analiz, kripto ve makro ekonomi için otomatik blog yazısı üretilir.
+SEO başlığı ve tag’ler üretir.
+Çıktı bir HTTP POST ile https://steveanalizweb.repl.co/api/blog adresine gönderilir.
+Web sitesi:
+Daha çok içerik ve analizlerle zenginleşir, sistem otomatik bir blog üretim döngüsüne geçer.
+Aşama 3: VPS’ye ve CDN’ye geçiş
+Replit’deki proje daha sonra VPS (örneğin Hetzner, DigitalOcean veya AWS Lightsail)’e taşınıyor.
+Yapı:
+nginx reverse proxy + Node.js + Let’s Encrypt SSL ile profesyonel bir sunucu konfigürasyonu.
+blogs.json yerine daha güçlü bir veritabanı (örneğin SQLite veya PostgreSQL) kullanılır.
+Ek servisler:
+Cloudflare CDN’i ile statik dosyaların (HTML, CSS, JS, görseller) daha hızlı yüklenmesi sağlanır.
+Monitoring ve loglama sistemleri eklenir.
+Replit:
+Replit, geliştirme ve test ortamı olarak kalır.
+Aşama 4: Global büyüme ve AI dashboard entegrasyonu
+Steve Analiz.web, yalnızca bir web sitesi değil, daha çok bir analiz hub’ı ve AI dashboard’u haline gelir.
+Ek ürün entegrasyonları:
+Managed database (örneğin Aiven veya PlanetScale) ile veri tabanı yönetimi.
+Web3 entegrasyonu (token, NFT, DAO tabanlı karar alma).
+Real‑time analiz dashboard’u ve Dify workflow’larıyla üretilen içeriklerin bir araya getirildiği bir panel.
+Scaling:
+VPS üzerinde Docker + Kubernetes gibi yapılarla yüksek ölçeklenebilir bir sistem kurulur.
+İlk adım olarak, bu evrimsel vizyon planını bir döküman şeklinde yaz

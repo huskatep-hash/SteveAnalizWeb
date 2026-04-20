@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "Steve Analiz.web"
+version = "1.0.0"
+id = "artifacts/steve-analiz"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 26069
+
+[services.development]
+run = "pnpm --filter @workspace/steve-analiz run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/steve-analiz", "run", "build" ]
+publicDir = "artifacts/steve-analiz/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "26069"
+BASE_PATH = "/"
