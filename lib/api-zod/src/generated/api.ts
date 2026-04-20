@@ -8,7 +8,6 @@
 import * as zod from "zod";
 
 /**
- * Returns server health status
  * @summary Health check
  */
 export const HealthCheckResponse = zod.object({
@@ -16,11 +15,19 @@ export const HealthCheckResponse = zod.object({
 });
 
 /**
- * Returns all blog posts ordered by newest first
+ * @summary Get blog statistics
+ */
+export const GetBlogStatsResponse = zod.object({
+  totalPosts: zod.number(),
+  tagCounts: zod.record(zod.string(), zod.number()),
+});
+
+/**
  * @summary List all blog posts
  */
 export const ListBlogPostsQueryParams = zod.object({
-  tag: zod.coerce.string().optional().describe("Filter posts by tag"),
+  tag: zod.coerce.string().optional(),
+  type: zod.enum(["analysis", "education", "general"]).optional(),
 });
 
 export const ListBlogPostsResponseItem = zod.object({
@@ -31,15 +38,17 @@ export const ListBlogPostsResponseItem = zod.object({
   summary: zod.string(),
   content: zod.string(),
   tags: zod.array(zod.string()),
+  type: zod.string(),
   createdAt: zod.coerce.date(),
   updatedAt: zod.coerce.date(),
 });
 export const ListBlogPostsResponse = zod.array(ListBlogPostsResponseItem);
 
 /**
- * Adds a new blog post to the platform
  * @summary Create a new blog post
  */
+export const createBlogPostBodyTypeDefault = `analysis`;
+
 export const CreateBlogPostBody = zod.object({
   title: zod.string(),
   slug: zod.string(),
@@ -47,6 +56,7 @@ export const CreateBlogPostBody = zod.object({
   summary: zod.string(),
   content: zod.string(),
   tags: zod.array(zod.string()),
+  type: zod.string().default(createBlogPostBodyTypeDefault),
 });
 
 /**
@@ -64,15 +74,96 @@ export const GetBlogPostResponse = zod.object({
   summary: zod.string(),
   content: zod.string(),
   tags: zod.array(zod.string()),
+  type: zod.string(),
   createdAt: zod.coerce.date(),
   updatedAt: zod.coerce.date(),
 });
 
 /**
- * Returns counts by tag and total post count
- * @summary Get blog statistics
+ * @summary List all education content
  */
-export const GetBlogStatsResponse = zod.object({
-  totalPosts: zod.number(),
-  tagCounts: zod.record(zod.string(), zod.number()),
+export const ListEducationContentResponseItem = zod.object({
+  id: zod.number(),
+  title: zod.string(),
+  slug: zod.string(),
+  content: zod.string(),
+  summary: zod.string(),
+  type: zod.string(),
+  order: zod.number(),
+  createdAt: zod.coerce.date(),
+  updatedAt: zod.coerce.date(),
 });
+export const ListEducationContentResponse = zod.array(
+  ListEducationContentResponseItem,
+);
+
+/**
+ * @summary Create new education content
+ */
+export const createEducationContentBodyTypeDefault = `education`;
+export const createEducationContentBodyOrderDefault = 0;
+
+export const CreateEducationContentBody = zod.object({
+  title: zod.string(),
+  slug: zod.string(),
+  content: zod.string(),
+  summary: zod.string(),
+  type: zod.string().default(createEducationContentBodyTypeDefault),
+  order: zod.number().default(createEducationContentBodyOrderDefault),
+});
+
+/**
+ * @summary Get a single education item by slug
+ */
+export const GetEducationContentParams = zod.object({
+  slug: zod.coerce.string(),
+});
+
+export const GetEducationContentResponse = zod.object({
+  id: zod.number(),
+  title: zod.string(),
+  slug: zod.string(),
+  content: zod.string(),
+  summary: zod.string(),
+  type: zod.string(),
+  order: zod.number(),
+  createdAt: zod.coerce.date(),
+  updatedAt: zod.coerce.date(),
+});
+
+/**
+ * @summary List all writer applications
+ */
+export const ListWritersResponseItem = zod.object({
+  id: zod.number(),
+  name: zod.string(),
+  email: zod.string(),
+  bio: zod.string(),
+  status: zod.enum(["pending", "approved", "rejected"]),
+  createdAt: zod.coerce.date(),
+});
+export const ListWritersResponse = zod.array(ListWritersResponseItem);
+
+/**
+ * @summary Submit a writer application
+ */
+export const ApplyAsWriterBody = zod.object({
+  name: zod.string(),
+  email: zod.string(),
+  bio: zod.string(),
+});
+
+/**
+ * @summary List only approved writers
+ */
+export const ListApprovedWritersResponseItem = zod.object({
+  id: zod.number(),
+  name: zod.string(),
+  email: zod.string(),
+  bio: zod.string(),
+  status: zod.enum(["pending", "approved", "rejected"]),
+  createdAt: zod.coerce.date(),
+});
+export const ListApprovedWritersResponse = zod.array(
+  ListApprovedWritersResponseItem,
+);

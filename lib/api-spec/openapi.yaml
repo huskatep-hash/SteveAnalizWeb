@@ -12,13 +12,16 @@ tags:
     description: Health operations
   - name: blog
     description: Blog post operations
+  - name: education
+    description: Education content operations
+  - name: writer
+    description: Writer platform operations
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -26,19 +29,37 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  # ─── Blog ───────────────────────────────────────────────
+  /blog/stats:
+    get:
+      operationId: getBlogStats
+      tags: [blog]
+      summary: Get blog statistics
+      responses:
+        "200":
+          description: Blog statistics
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BlogStats"
   /blog:
     get:
       operationId: listBlogPosts
       tags: [blog]
       summary: List all blog posts
-      description: Returns all blog posts ordered by newest first
       parameters:
         - name: tag
           in: query
           required: false
           schema:
             type: string
-          description: Filter posts by tag
+        - name: type
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [analysis, education, general]
       responses:
         "200":
           description: List of blog posts
@@ -52,7 +73,6 @@ paths:
       operationId: createBlogPost
       tags: [blog]
       summary: Create a new blog post
-      description: Adds a new blog post to the platform
       requestBody:
         required: true
         content:
@@ -96,19 +116,123 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
-  /blog/stats:
+
+  # ─── Education ──────────────────────────────────────────
+  /education:
     get:
-      operationId: getBlogStats
-      tags: [blog]
-      summary: Get blog statistics
-      description: Returns counts by tag and total post count
+      operationId: listEducationContent
+      tags: [education]
+      summary: List all education content
       responses:
         "200":
-          description: Blog statistics
+          description: List of education items
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/BlogStats"
+                type: array
+                items:
+                  $ref: "#/components/schemas/EducationPost"
+    post:
+      operationId: createEducationContent
+      tags: [education]
+      summary: Create new education content
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateEducationBody"
+      responses:
+        "201":
+          description: Created education post
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EducationPost"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /education/{slug}:
+    get:
+      operationId: getEducationContent
+      tags: [education]
+      summary: Get a single education item by slug
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Education post
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EducationPost"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  # ─── Writer ─────────────────────────────────────────────
+  /writer:
+    get:
+      operationId: listWriters
+      tags: [writer]
+      summary: List all writer applications
+      responses:
+        "200":
+          description: List of writers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Writer"
+    post:
+      operationId: applyAsWriter
+      tags: [writer]
+      summary: Submit a writer application
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateWriterBody"
+      responses:
+        "201":
+          description: Writer application created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Writer"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /writer/approved:
+    get:
+      operationId: listApprovedWriters
+      tags: [writer]
+      summary: List only approved writers
+      responses:
+        "200":
+          description: Approved writers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Writer"
+
 components:
   schemas:
     HealthStatus:
@@ -116,8 +240,8 @@ components:
       properties:
         status:
           type: string
-      required:
-        - status
+      required: [status]
+
     BlogPost:
       type: object
       properties:
@@ -137,22 +261,16 @@ components:
           type: array
           items:
             type: string
+        type:
+          type: string
         createdAt:
           type: string
           format: date-time
         updatedAt:
           type: string
           format: date-time
-      required:
-        - id
-        - title
-        - slug
-        - author
-        - summary
-        - content
-        - tags
-        - createdAt
-        - updatedAt
+      required: [id, title, slug, author, summary, content, tags, type, createdAt, updatedAt]
+
     CreateBlogPostBody:
       type: object
       properties:
@@ -170,13 +288,11 @@ components:
           type: array
           items:
             type: string
-      required:
-        - title
-        - slug
-        - author
-        - summary
-        - content
-        - tags
+        type:
+          type: string
+          default: analysis
+      required: [title, slug, author, summary, content, tags]
+
     BlogStats:
       type: object
       properties:
@@ -186,13 +302,85 @@ components:
           type: object
           additionalProperties:
             type: integer
-      required:
-        - totalPosts
-        - tagCounts
+      required: [totalPosts, tagCounts]
+
+    EducationPost:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        slug:
+          type: string
+        content:
+          type: string
+        summary:
+          type: string
+        type:
+          type: string
+        order:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required: [id, title, slug, content, summary, type, order, createdAt, updatedAt]
+
+    CreateEducationBody:
+      type: object
+      properties:
+        title:
+          type: string
+        slug:
+          type: string
+        content:
+          type: string
+        summary:
+          type: string
+        type:
+          type: string
+          default: education
+        order:
+          type: integer
+          default: 0
+      required: [title, slug, content, summary]
+
+    Writer:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+        bio:
+          type: string
+        status:
+          type: string
+          enum: [pending, approved, rejected]
+        createdAt:
+          type: string
+          format: date-time
+      required: [id, name, email, bio, status, createdAt]
+
+    CreateWriterBody:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        bio:
+          type: string
+      required: [name, email, bio]
+
     ErrorResponse:
       type: object
       properties:
         error:
           type: string
-      required:
-        - error
+      required: [error]

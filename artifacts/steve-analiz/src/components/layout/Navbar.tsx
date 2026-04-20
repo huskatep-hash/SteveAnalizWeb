@@ -39,6 +39,24 @@ export function Navbar() {
               Blog
             </Link>
             <Link
+              href="/education"
+              className={cn(
+                "transition-colors hover:text-foreground/80",
+                isActive("/education") ? "text-foreground" : "text-foreground/60"
+              )}
+            >
+              Eğitim
+            </Link>
+            <Link
+              href="/writer"
+              className={cn(
+                "transition-colors hover:text-foreground/80",
+                isActive("/writer") ? "text-foreground" : "text-foreground/60"
+              )}
+            >
+              Yazarlar
+            </Link>
+            <Link
               href="/about"
               className={cn(
                 "transition-colors hover:text-foreground/80",

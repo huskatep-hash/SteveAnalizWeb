@@ -20,9 +20,13 @@ import type {
   BlogPost,
   BlogStats,
   CreateBlogPostBody,
+  CreateEducationBody,
+  CreateWriterBody,
+  EducationPost,
   ErrorResponse,
   HealthStatus,
   ListBlogPostsParams,
+  Writer,
 } from "./api.schemas";
 
 import { customFetch } from "../custom-fetch";
@@ -35,7 +39,6 @@ type Awaited<O> = O extends AwaitedInput<infer T> ? T : never;
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
 /**
- * Returns server health status
  * @summary Health check
  */
 export const getHealthCheckUrl = () => {
@@ -111,7 +114,81 @@ export function useHealthCheck<
 }
 
 /**
- * Returns all blog posts ordered by newest first
+ * @summary Get blog statistics
+ */
+export const getGetBlogStatsUrl = () => {
+  return `/api/blog/stats`;
+};
+
+export const getBlogStats = async (
+  options?: RequestInit,
+): Promise<BlogStats> => {
+  return customFetch<BlogStats>(getGetBlogStatsUrl(), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getGetBlogStatsQueryKey = () => {
+  return [`/api/blog/stats`] as const;
+};
+
+export const getGetBlogStatsQueryOptions = <
+  TData = Awaited<ReturnType<typeof getBlogStats>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getBlogStats>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetBlogStatsQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getBlogStats>>> = ({
+    signal,
+  }) => getBlogStats({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getBlogStats>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetBlogStatsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getBlogStats>>
+>;
+export type GetBlogStatsQueryError = ErrorType<unknown>;
+
+/**
+ * @summary Get blog statistics
+ */
+
+export function useGetBlogStats<
+  TData = Awaited<ReturnType<typeof getBlogStats>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getBlogStats>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetBlogStatsQueryOptions(options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
  * @summary List all blog posts
  */
 export const getListBlogPostsUrl = (params?: ListBlogPostsParams) => {
@@ -206,7 +283,6 @@ export function useListBlogPosts<
 }
 
 /**
- * Adds a new blog post to the platform
  * @summary Create a new blog post
  */
 export const getCreateBlogPostUrl = () => {
@@ -380,32 +456,31 @@ export function useGetBlogPost<
 }
 
 /**
- * Returns counts by tag and total post count
- * @summary Get blog statistics
+ * @summary List all education content
  */
-export const getGetBlogStatsUrl = () => {
-  return `/api/blog/stats`;
+export const getListEducationContentUrl = () => {
+  return `/api/education`;
 };
 
-export const getBlogStats = async (
+export const listEducationContent = async (
   options?: RequestInit,
-): Promise<BlogStats> => {
-  return customFetch<BlogStats>(getGetBlogStatsUrl(), {
+): Promise<EducationPost[]> => {
+  return customFetch<EducationPost[]>(getListEducationContentUrl(), {
     ...options,
     method: "GET",
   });
 };
 
-export const getGetBlogStatsQueryKey = () => {
-  return [`/api/blog/stats`] as const;
+export const getListEducationContentQueryKey = () => {
+  return [`/api/education`] as const;
 };
 
-export const getGetBlogStatsQueryOptions = <
-  TData = Awaited<ReturnType<typeof getBlogStats>>,
+export const getListEducationContentQueryOptions = <
+  TData = Awaited<ReturnType<typeof listEducationContent>>,
   TError = ErrorType<unknown>,
 >(options?: {
   query?: UseQueryOptions<
-    Awaited<ReturnType<typeof getBlogStats>>,
+    Awaited<ReturnType<typeof listEducationContent>>,
     TError,
     TData
   >;
@@ -413,40 +488,448 @@ export const getGetBlogStatsQueryOptions = <
 }) => {
   const { query: queryOptions, request: requestOptions } = options ?? {};
 
-  const queryKey = queryOptions?.queryKey ?? getGetBlogStatsQueryKey();
+  const queryKey = queryOptions?.queryKey ?? getListEducationContentQueryKey();
 
-  const queryFn: QueryFunction<Awaited<ReturnType<typeof getBlogStats>>> = ({
-    signal,
-  }) => getBlogStats({ signal, ...requestOptions });
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof listEducationContent>>
+  > = ({ signal }) => listEducationContent({ signal, ...requestOptions });
 
   return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof getBlogStats>>,
+    Awaited<ReturnType<typeof listEducationContent>>,
     TError,
     TData
   > & { queryKey: QueryKey };
 };
 
-export type GetBlogStatsQueryResult = NonNullable<
-  Awaited<ReturnType<typeof getBlogStats>>
+export type ListEducationContentQueryResult = NonNullable<
+  Awaited<ReturnType<typeof listEducationContent>>
 >;
-export type GetBlogStatsQueryError = ErrorType<unknown>;
+export type ListEducationContentQueryError = ErrorType<unknown>;
 
 /**
- * @summary Get blog statistics
+ * @summary List all education content
  */
 
-export function useGetBlogStats<
-  TData = Awaited<ReturnType<typeof getBlogStats>>,
+export function useListEducationContent<
+  TData = Awaited<ReturnType<typeof listEducationContent>>,
   TError = ErrorType<unknown>,
 >(options?: {
   query?: UseQueryOptions<
-    Awaited<ReturnType<typeof getBlogStats>>,
+    Awaited<ReturnType<typeof listEducationContent>>,
     TError,
     TData
   >;
   request?: SecondParameter<typeof customFetch>;
 }): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
-  const queryOptions = getGetBlogStatsQueryOptions(options);
+  const queryOptions = getListEducationContentQueryOptions(options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * @summary Create new education content
+ */
+export const getCreateEducationContentUrl = () => {
+  return `/api/education`;
+};
+
+export const createEducationContent = async (
+  createEducationBody: CreateEducationBody,
+  options?: RequestInit,
+): Promise<EducationPost> => {
+  return customFetch<EducationPost>(getCreateEducationContentUrl(), {
+    ...options,
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(createEducationBody),
+  });
+};
+
+export const getCreateEducationContentMutationOptions = <
+  TError = ErrorType<ErrorResponse>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof createEducationContent>>,
+    TError,
+    { data: BodyType<CreateEducationBody> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof createEducationContent>>,
+  TError,
+  { data: BodyType<CreateEducationBody> },
+  TContext
+> => {
+  const mutationKey = ["createEducationContent"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof createEducationContent>>,
+    { data: BodyType<CreateEducationBody> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return createEducationContent(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type CreateEducationContentMutationResult = NonNullable<
+  Awaited<ReturnType<typeof createEducationContent>>
+>;
+export type CreateEducationContentMutationBody = BodyType<CreateEducationBody>;
+export type CreateEducationContentMutationError = ErrorType<ErrorResponse>;
+
+/**
+ * @summary Create new education content
+ */
+export const useCreateEducationContent = <
+  TError = ErrorType<ErrorResponse>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof createEducationContent>>,
+    TError,
+    { data: BodyType<CreateEducationBody> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof createEducationContent>>,
+  TError,
+  { data: BodyType<CreateEducationBody> },
+  TContext
+> => {
+  return useMutation(getCreateEducationContentMutationOptions(options));
+};
+
+/**
+ * @summary Get a single education item by slug
+ */
+export const getGetEducationContentUrl = (slug: string) => {
+  return `/api/education/${slug}`;
+};
+
+export const getEducationContent = async (
+  slug: string,
+  options?: RequestInit,
+): Promise<EducationPost> => {
+  return customFetch<EducationPost>(getGetEducationContentUrl(slug), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getGetEducationContentQueryKey = (slug: string) => {
+  return [`/api/education/${slug}`] as const;
+};
+
+export const getGetEducationContentQueryOptions = <
+  TData = Awaited<ReturnType<typeof getEducationContent>>,
+  TError = ErrorType<ErrorResponse>,
+>(
+  slug: string,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getEducationContent>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getGetEducationContentQueryKey(slug);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getEducationContent>>
+  > = ({ signal }) => getEducationContent(slug, { signal, ...requestOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!slug,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof getEducationContent>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetEducationContentQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getEducationContent>>
+>;
+export type GetEducationContentQueryError = ErrorType<ErrorResponse>;
+
+/**
+ * @summary Get a single education item by slug
+ */
+
+export function useGetEducationContent<
+  TData = Awaited<ReturnType<typeof getEducationContent>>,
+  TError = ErrorType<ErrorResponse>,
+>(
+  slug: string,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getEducationContent>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetEducationContentQueryOptions(slug, options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * @summary List all writer applications
+ */
+export const getListWritersUrl = () => {
+  return `/api/writer`;
+};
+
+export const listWriters = async (options?: RequestInit): Promise<Writer[]> => {
+  return customFetch<Writer[]>(getListWritersUrl(), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getListWritersQueryKey = () => {
+  return [`/api/writer`] as const;
+};
+
+export const getListWritersQueryOptions = <
+  TData = Awaited<ReturnType<typeof listWriters>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof listWriters>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getListWritersQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof listWriters>>> = ({
+    signal,
+  }) => listWriters({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof listWriters>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type ListWritersQueryResult = NonNullable<
+  Awaited<ReturnType<typeof listWriters>>
+>;
+export type ListWritersQueryError = ErrorType<unknown>;
+
+/**
+ * @summary List all writer applications
+ */
+
+export function useListWriters<
+  TData = Awaited<ReturnType<typeof listWriters>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof listWriters>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getListWritersQueryOptions(options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * @summary Submit a writer application
+ */
+export const getApplyAsWriterUrl = () => {
+  return `/api/writer`;
+};
+
+export const applyAsWriter = async (
+  createWriterBody: CreateWriterBody,
+  options?: RequestInit,
+): Promise<Writer> => {
+  return customFetch<Writer>(getApplyAsWriterUrl(), {
+    ...options,
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(createWriterBody),
+  });
+};
+
+export const getApplyAsWriterMutationOptions = <
+  TError = ErrorType<ErrorResponse>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof applyAsWriter>>,
+    TError,
+    { data: BodyType<CreateWriterBody> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof applyAsWriter>>,
+  TError,
+  { data: BodyType<CreateWriterBody> },
+  TContext
+> => {
+  const mutationKey = ["applyAsWriter"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof applyAsWriter>>,
+    { data: BodyType<CreateWriterBody> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return applyAsWriter(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type ApplyAsWriterMutationResult = NonNullable<
+  Awaited<ReturnType<typeof applyAsWriter>>
+>;
+export type ApplyAsWriterMutationBody = BodyType<CreateWriterBody>;
+export type ApplyAsWriterMutationError = ErrorType<ErrorResponse>;
+
+/**
+ * @summary Submit a writer application
+ */
+export const useApplyAsWriter = <
+  TError = ErrorType<ErrorResponse>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof applyAsWriter>>,
+    TError,
+    { data: BodyType<CreateWriterBody> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof applyAsWriter>>,
+  TError,
+  { data: BodyType<CreateWriterBody> },
+  TContext
+> => {
+  return useMutation(getApplyAsWriterMutationOptions(options));
+};
+
+/**
+ * @summary List only approved writers
+ */
+export const getListApprovedWritersUrl = () => {
+  return `/api/writer/approved`;
+};
+
+export const listApprovedWriters = async (
+  options?: RequestInit,
+): Promise<Writer[]> => {
+  return customFetch<Writer[]>(getListApprovedWritersUrl(), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getListApprovedWritersQueryKey = () => {
+  return [`/api/writer/approved`] as const;
+};
+
+export const getListApprovedWritersQueryOptions = <
+  TData = Awaited<ReturnType<typeof listApprovedWriters>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof listApprovedWriters>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getListApprovedWritersQueryKey();
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof listApprovedWriters>>
+  > = ({ signal }) => listApprovedWriters({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof listApprovedWriters>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type ListApprovedWritersQueryResult = NonNullable<
+  Awaited<ReturnType<typeof listApprovedWriters>>
+>;
+export type ListApprovedWritersQueryError = ErrorType<unknown>;
+
+/**
+ * @summary List only approved writers
+ */
+
+export function useListApprovedWriters<
+  TData = Awaited<ReturnType<typeof listApprovedWriters>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof listApprovedWriters>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getListApprovedWritersQueryOptions(options);
 
   const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
     queryKey: QueryKey;

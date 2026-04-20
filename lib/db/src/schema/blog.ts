@@ -10,6 +10,7 @@ export const blogPostsTable = pgTable("blog_posts", {
   summary: text("summary").notNull(),
   content: text("content").notNull(),
   tags: text("tags").array().notNull().default([]),
+  type: text("type").notNull().default("analysis"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow().$onUpdate(() => new Date()),
 });
