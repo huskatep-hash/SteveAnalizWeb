@@ -1,0 +1,62 @@
+“Londra yeşil ve logolu taslak web’imden Replit’e yansıma”
+“Steve Analiz.web için https://steveanalizweb-com-6a89ca.webflow.io adresindeki taslağa çok sadık kalarak ve Londra yeşil temalı (forest/dark green tone) bir web sitesi ve API’yi Replit’de Node.js + Express ile oluştur.
+1. Tasarım ve renk paleti
+Renkler (Londra yeşil temalı):
+Ana tema: #0d3b1e veya benzeri koyu yeşil.
+Aksan: #1e7a3f veya #2a9d57 gibi daha açık yeşil tonu.
+Arka plan: #f6f8f5 veya #f9faf7 gibi açık gri-yeşil ton.
+Metin: #121826 (koyu siyah-gri).
+Tasarım tarzı:
+Webflow taslağı gibi modern, minimal, bol boşluklı ve sanatsal ağırlıkta bir arayüz.
+2. Logo ve header (navbar) bölümleri
+public/images/logo.png dosyası oluştur (veya logo.svg).
+index.html’de:
+navbar bölümü:
+Sol üstte Steve Analiz.web yazı ve logo (örneğin: <img src="/images/logo.png" alt="Steve Analiz.web Logo" class="logo">).
+Sağda menü butonları: Blog, Yazarlar, Eğitimler, İletişim, Daha Fazla Bilgi.
+Üst kısım (hero):
+h1 → STEVE ANALİZ.WEB 2.0
+h2 → Geleceğe Yönelik Finansal Analiz ve Eğitim Platformu
+3. Replit yapısı ve dosyalar
+server.js (Node.js + Express)
+public/ içinde:
+index.html
+blog.html
+writers.html
+courses.html
+course-detail.html
+public/images/logo.png
+public/css/style.css (Londra yeşil tema ile)
+public/js/script.js
+blogs.json
+courses.json
+writers.json
+package.json (içinde express ve body-parser bağımlılıkları olsun)
+4. style.css ve Londra yeşil tema
+style.css’i Londra yeşil temaya göre yaz:
+body ve main renkleri: #0d3b1e ve #f9faf7.
+navbar background: #0d3b1e, text ve linkler #f9faf7.
+hero section:
+background: #0d3b1e;
+color: #f9faf7;
+padding: 60px 20px; ve text-align: center;.
+blog-card, course-card, writer-card’lar:
+background: #f9faf7;
+5. index.html ve logo/hero bölümü
+index.html’de hero ve logo bölümleri, Londra yeşil renk paleti ve Steve Analiz.web logo’yu içerir.
+6. server.js ve API’ler
+server.js’i express ve body-parser ile app.listen(PORT); olarak başlat.
+Routes:
+GET / → index.html
+GET /blog → blog.html
+GET /writers → writers.html
+GET /courses → courses.html
+GET /course-detail → course-detail.html
+GET /api/blogs → blogs.json dosyasını JSON olarak döndür.
+POST /api/blog → blogs.json dosyasına yeni blog yazısı ekler.
+GET /api/courses → courses.json dosyasını JSON olarak döndür.
+POST /api/course → courses.json dosyasına yeni kurs ekler.
+GET /api/writers → writers.json dosyasını JSON olarak döndür.
+7. Çıktı formatı
+server.js, index.html, blog.html, writers.html, courses.html, course-detail.html, public/css/style.css, public/images/logo.png, blogs.json, courses.json, writers.json ve package.json dosyalarını Replit Assistant’ına doğrudan yapıştırabileceğim şekilde yaz.”
+Bu prompt’u Replit AI Assistant’ına yaz, o server.js ve style.css ve index.html ve blog.html ve writers.html ve courses.html ve course-detail.html ve images/logo.png ve blogs.json ve courses.json ve writers.json ve package.json ve server.js ve style.css ve index.html ve blog.html ve writers.html ve courses.html ve course-detail.html ve images
