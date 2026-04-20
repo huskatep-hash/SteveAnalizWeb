@@ -17,6 +17,7 @@ export interface BlogPost {
   summary: string;
   content: string;
   tags: string[];
+  type: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -28,6 +29,7 @@ export interface CreateBlogPostBody {
   summary: string;
   content: string;
   tags: string[];
+  type?: string;
 }
 
 export type BlogStatsTagCounts = { [key: string]: number };
@@ -37,13 +39,64 @@ export interface BlogStats {
   tagCounts: BlogStatsTagCounts;
 }
 
+export interface EducationPost {
+  id: number;
+  title: string;
+  slug: string;
+  content: string;
+  summary: string;
+  type: string;
+  order: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateEducationBody {
+  title: string;
+  slug: string;
+  content: string;
+  summary: string;
+  type?: string;
+  order?: number;
+}
+
+export type WriterStatus = (typeof WriterStatus)[keyof typeof WriterStatus];
+
+export const WriterStatus = {
+  pending: "pending",
+  approved: "approved",
+  rejected: "rejected",
+} as const;
+
+export interface Writer {
+  id: number;
+  name: string;
+  email: string;
+  bio: string;
+  status: WriterStatus;
+  createdAt: string;
+}
+
+export interface CreateWriterBody {
+  name: string;
+  email: string;
+  bio: string;
+}
+
 export interface ErrorResponse {
   error: string;
 }
 
 export type ListBlogPostsParams = {
-  /**
-   * Filter posts by tag
-   */
   tag?: string;
+  type?: ListBlogPostsType;
 };
+
+export type ListBlogPostsType =
+  (typeof ListBlogPostsType)[keyof typeof ListBlogPostsType];
+
+export const ListBlogPostsType = {
+  analysis: "analysis",
+  education: "education",
+  general: "general",
+} as const;

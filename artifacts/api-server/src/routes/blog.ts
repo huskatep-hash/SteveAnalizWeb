@@ -1,5 +1,5 @@
 import { Router, type IRouter } from "express";
-import { eq, desc, sql } from "drizzle-orm";
+import { and, eq, desc, sql } from "drizzle-orm";
 import { db, blogPostsTable } from "@workspace/db";
 import {
   ListBlogPostsQueryParams,
@@ -31,21 +31,17 @@ router.get("/blog", async (req, res): Promise<void> => {
     return;
   }
 
-  const { tag } = queryParsed.data;
+  const { tag, type } = queryParsed.data;
 
-  let posts;
-  if (tag) {
-    posts = await db
-      .select()
-      .from(blogPostsTable)
-      .where(sql`${tag} = ANY(${blogPostsTable.tags})`)
-      .orderBy(desc(blogPostsTable.createdAt));
-  } else {
-    posts = await db
-      .select()
-      .from(blogPostsTable)
-      .orderBy(desc(blogPostsTable.createdAt));
-  }
+  const conditions = [];
+  if (tag) conditions.push(sql`${tag} = ANY(${blogPostsTable.tags})`);
+  if (type) conditions.push(eq(blogPostsTable.type, type));
+
+  const posts = await db
+    .select()
+    .from(blogPostsTable)
+    .where(conditions.length > 0 ? and(...conditions) : undefined)
+    .orderBy(desc(blogPostsTable.createdAt));
 
   res.json(posts);
 });
@@ -59,7 +55,7 @@ router.post("/blog", async (req, res): Promise<void> => {
 
   const [post] = await db
     .insert(blogPostsTable)
-    .values(parsed.data)
+    .values({ ...parsed.data, type: parsed.data.type ?? "analysis" })
     .returning();
 
   res.status(201).json(post);

@@ -1,0 +1,123 @@
+Replit API’li web + AI robot + eğitim & yazar platformu
+“Steve Analiz.web için web + AI robot + eğitim ve yazar platformu’nu birleştirerek bir sistem tasarla.
+1. Amaç ve görev
+Replit’de çalışan Node.js + Express bir web + API’li sistem,
+Dify’de çalışan AI robot (blog + analiz yazarı, eğitim içerikleri),
+Bunu kullanarak eğitim ve yazar platformu’na dönüşecek bir yapı kur.
+Global ve Web 2.0 spiritinde:
+genç yatırımcılar,
+finansal analiz yazarları,
+eğitim içeriği sorumlu ve katılımcıları
+için bir ortam oluştur.
+2. Replit tarafında (web + API)
+Replit projesi SteveAnalizWeb adı altında şöyle bir yapıya sahip olsun:
+Gerekli dosyalar:
+server.js (Node.js + Express)
+public/ klasörü içinde:
+index.html
+blog/ klasörü içinde:
+blog-list.html
+blog-post.html
+writer/ klasöründe:
+writer-home.html
+submit-article.html
+education/ klasöründe:
+education-home.html
+course-1.html, course-2.html
+API Rotasyonlar:
+GET / → index.html ana sayfa
+GET /blog → blog-list.html
+GET /blog/:slug → blog-post.html
+GET /writer → writer-home.html
+GET /education → education-home.html
+GET /education/course-1 → course-1.html
+GET /education/course-2 → course-2.html
+POST /api/blog → yeni bir blog yazısı alır, blogs.json veya blogs.db’de kaydeder.
+GET /api/blogs → tüm blogları dizi olarak döndürür.
+GET /api/blogs/:tag → etikete göre blogları döndürür.
+POST /api/education → eğitim içeriği (örneğin: ders açıklaması, notlar, özetler)
+GET /api/education → tüm eğitim içerikleri
+POST /api/writer → yeni bir yazara başvuru kaydı.
+Örnek POST /api/blog body:
+{
+  "title": "Yeni bir analiz başlığı",
+  "slug": "yeni-analiz-basligi",
+  "author": "Steve Analiz",
+  "tags": ["kripto", "finans"],
+  "content": "Bu alan blog yazısının tam metni.",
+  "type": "analysis"
+}
+Örnek POST /api/education body:
+{
+  "title": "Finansal Analiz 1. Ders",
+  "slug": "finansal-analiz-1",
+  "content": "Ders detayları, konu açıklaması...",
+  "type": "education"
+}
+Örnek POST /api/writer body:
+{
+  "name": "Yazar Adı",
+  "email": "yazar@email.com",
+  "bio": "Yazarın kısa biyografisi..."
+}
+Veri tabanı:
+blogs.json ile başla,
+daha sonra SQLite veya PostgreSQL ile blogs ve education tabloları oluştur.
+Teknik istek:
+app.use(express.static('public'));
+blogs.json ile CRUD işlemleri
+server.js Replit’de doğrudan çalıştırılabilir olsun
+3. Dify tarafında (AI robot)
+Dify’de STEVE_ANALİZ.AI_ROBOT adlı bir workflow oluştur.
+Bu workflow, Steve Analiz.web için AI robot olarak çalışır ve:
+blog yazısı,
+eğitim içeriği,
+yazar notu
+üretir.
+Workflow adımları:
+User Input Node → konu, anahtar kelime, görev (örneğin: blog, education)
+Prompt Node
+blog seçildiğinde:
+“Finansal analiz, kripto ve makro ekonomi için otomatik bir blog yazısı yaz. Başlık ve SEO bilgileri üret.”
+education seçildiğinde:
+“Eğitim içeriği (örneğin Finansal Analiz 1. Ders) için bir ders açıklaması, konu listesi ve örnek notlar yaz.”
+writer seçildiğinde:
+“Yazarın kısa bir biyografisi ve tanıtımı yaz.”
+HTTP Request Node
+POST → https://steveanalizweb.repl.co/api/blog veya https://steveanalizweb.repl.co/api/education
+Content-Type: application/json
+body kısmında yukarıdaki örnek JSON’ları kullan.
+Örnek HTTP Request Node body:
+{
+  "title": "Yeni Analiz Başlığı",
+  "slug": "yeni-analiz-basligi",
+  "author": "Steve Analiz.AI",
+  "tags": ["kripto", "finans"],
+  "content": "Bu alan blog yazısının tam metni.",
+  "type": "analysis"
+}
+4. Eğitim ve yazar platformu
+Bu yapı eğitim ve yazar platformu olarak aşağıdaki işlevleri sunar:
+Yazarlar için:
+writer sayfasında Gönderi Gönder formu ile yazara başvuru
+GET /api/writer → yazara listesi
+GET /writer/approved → onaylanmış yazarlar
+Eğitim için:
+education sayfasında Eğitimler listesi
+GET /api/education → eğitim içerikleri
+education/course-1.html → ders sayfası
+AI Robot ile:
+education sayfasında AI Öğretmen butonu → yeni bir ders açıklaması üretir
+writer sayfasında AI Yazar butonu → yeni bir analiz yazarı için biyografi üreter
+5. Çıktı
+Bana Replit AI Assistant’ına yapıştırabileceğim şekilde:
+server.js kodu,
+public/index.html, blog-list.html, blog-post.html, writer-home.html, submit-article.html, education-home.html, course-1.html, course-2.html
+css/style.css
+js/script.js
+blogs.json
+Dify’de STEVE_ANALİZ.AI_ROBOT workflow’u için
+Prompt Node ve HTTP Request Node örnekleri
+bunları Replit’de doğrudan çalıştırabileceğim biçimde ver.”
+Bu prompt’u Replit AI Assistant’ına yapıştır, o Steve Analiz.web için bir web + AI robot + eğitim ve yazar platformu’nu tamamen koda döker.
+Daha sonra Dify’de HTTP Request Node ile https://steveanalizweb.repl.co/api/blog’e POST yaparak her blog yazısı, eğitim içeriği ve yazar biyografisi sisteme otomatik olarak eklenir.

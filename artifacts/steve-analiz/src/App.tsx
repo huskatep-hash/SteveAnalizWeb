@@ -8,6 +8,9 @@ import { AppLayout } from "@/components/layout/AppLayout";
 import Home from "@/pages/Home";
 import Blog from "@/pages/Blog";
 import BlogPostDetail from "@/pages/BlogPostDetail";
+import Education from "@/pages/Education";
+import EducationDetail from "@/pages/EducationDetail";
+import Writer from "@/pages/Writer";
 import Vision from "@/pages/Vision";
 
 const queryClient = new QueryClient({
@@ -26,6 +29,9 @@ function Router() {
         <Route path="/" component={Home} />
         <Route path="/blog" component={Blog} />
         <Route path="/blog/:slug" component={BlogPostDetail} />
+        <Route path="/education" component={Education} />
+        <Route path="/education/:slug" component={EducationDetail} />
+        <Route path="/writer" component={Writer} />
         <Route path="/about" component={Vision} />
         <Route component={NotFound} />
       </Switch>

@@ -97,8 +97,23 @@ Payload format:
 
 ## API Endpoints
 
+### Blog
 - `GET /api/healthz` — health check
-- `GET /api/blog` — list all blog posts (optional `?tag=` filter)
-- `POST /api/blog` — create a new blog post `{ title, slug, author, summary, content, tags }`
-- `GET /api/blog/:slug` — get a single blog post by slug
-- `GET /api/blog/stats` — get total post count and tag distribution
+- `GET /api/blog` — list posts (optional `?tag=` and `?type=` filters)
+- `POST /api/blog` — create post `{ title, slug, author, summary, content, tags, type? }`
+- `GET /api/blog/:slug` — get post by slug
+- `GET /api/blog/stats` — totals and tag distribution
+
+### Education
+- `GET /api/education` — list all education content (ordered by `order` field)
+- `POST /api/education` — create education content `{ title, slug, summary, content, type?, order? }`
+- `GET /api/education/:slug` — get single education item
+
+### Writers
+- `GET /api/writer` — list all writer applications
+- `GET /api/writer/approved` — list only approved writers
+- `POST /api/writer` — submit writer application `{ name, email, bio }`
+
+### Dify AI Workflow Payloads
+Blog: `POST /api/blog` → `{ title, slug, author, summary, content, tags, type: "analysis" }`
+Education: `POST /api/education` → `{ title, slug, summary, content, type: "education", order: 0 }`

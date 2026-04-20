@@ -1,18 +1,21 @@
 import { Link } from "wouter";
-import { useListBlogPosts, useGetBlogStats } from "@workspace/api-client-react";
+import { useListBlogPosts, useGetBlogStats, useListEducationContent, useListApprovedWriters } from "@workspace/api-client-react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ArrowRight, BarChart3, TrendingUp, Users } from "lucide-react";
+import { ArrowRight, BarChart3, TrendingUp, Users, BookOpen, PenTool } from "lucide-react";
 import { format } from "date-fns";
 import { tr } from "date-fns/locale";
 
 export default function Home() {
   const { data: blogPosts, isLoading: isLoadingPosts } = useListBlogPosts();
   const { data: blogStats, isLoading: isLoadingStats } = useGetBlogStats();
+  const { data: educationItems, isLoading: isLoadingEducation } = useListEducationContent();
+  const { data: approvedWriters, isLoading: isLoadingWriters } = useListApprovedWriters();
 
   const recentPosts = blogPosts?.slice(0, 3) || [];
+  const recentEducation = educationItems?.slice(0, 3) || [];
 
   return (
     <div className="space-y-16 animate-in fade-in slide-in-from-bottom-4 duration-700">
@@ -93,7 +96,7 @@ export default function Home() {
             <p className="text-muted-foreground">Büyüyen analiz havuzumuza göz atın.</p>
           </div>
           
-          <div className="flex gap-12">
+          <div className="flex gap-12 flex-wrap justify-center md:justify-end">
             <div className="text-center">
               <div className="text-5xl font-black text-primary mb-2">
                 {isLoadingStats ? <Skeleton className="h-12 w-16 mx-auto" /> : blogStats?.totalPosts || 0}
@@ -102,6 +105,20 @@ export default function Home() {
             </div>
             
             <div className="text-center">
+              <div className="text-5xl font-black text-primary mb-2">
+                {isLoadingEducation ? <Skeleton className="h-12 w-16 mx-auto" /> : educationItems?.length || 0}
+              </div>
+              <div className="text-sm text-muted-foreground font-medium uppercase tracking-wider">Eğitim İçeriği</div>
+            </div>
+
+            <div className="text-center">
+              <div className="text-5xl font-black text-primary mb-2">
+                {isLoadingWriters ? <Skeleton className="h-12 w-16 mx-auto" /> : approvedWriters?.length || 0}
+              </div>
+              <div className="text-sm text-muted-foreground font-medium uppercase tracking-wider">Onaylı Yazar</div>
+            </div>
+            
+            <div className="text-center w-full sm:w-auto mt-4 sm:mt-0">
               <div className="flex flex-wrap justify-center gap-2 max-w-[200px] mb-2">
                 {isLoadingStats ? (
                   <Skeleton className="h-12 w-full" />
@@ -182,6 +199,84 @@ export default function Home() {
         <Link href="/blog" className="sm:hidden mt-4 block">
           <Button variant="outline" className="w-full">
             Tümünü Gör <ArrowRight className="ml-2 h-4 w-4" />
+          </Button>
+        </Link>
+      </section>
+
+      {/* Latest Education Items */}
+      <section className="space-y-8">
+        <div className="flex justify-between items-end">
+          <div className="space-y-2">
+            <h2 className="text-3xl font-bold tracking-tight">Eğitim Platformu</h2>
+            <p className="text-muted-foreground">Yapılandırılmış yatırım ve analiz eğitimleri.</p>
+          </div>
+          <Link href="/education">
+            <Button variant="ghost" className="hidden sm:flex">
+              Tümünü Gör <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {isLoadingEducation ? (
+            Array.from({ length: 3 }).map((_, i) => (
+              <Card key={i} className="flex flex-col h-full">
+                <CardHeader>
+                  <Skeleton className="h-6 w-3/4 mb-2" />
+                  <Skeleton className="h-4 w-1/4" />
+                </CardHeader>
+                <CardContent className="flex-1">
+                  <Skeleton className="h-20 w-full" />
+                </CardContent>
+              </Card>
+            ))
+          ) : (
+            recentEducation.map((item) => (
+              <Card key={item.id} className="flex flex-col h-full bg-card hover:border-primary/40 transition-colors group">
+                <CardHeader>
+                  <div className="flex justify-between items-start mb-3">
+                    <Badge variant="outline" className="text-xs border-primary/30 text-primary">
+                      {item.type}
+                    </Badge>
+                    <span className="text-xs text-muted-foreground font-medium">Bölüm {item.order}</span>
+                  </div>
+                  <CardTitle className="line-clamp-2 group-hover:text-primary transition-colors">
+                    {item.title}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="flex-1">
+                  <p className="text-muted-foreground line-clamp-3 text-sm">
+                    {item.summary}
+                  </p>
+                </CardContent>
+                <CardFooter>
+                  <Link href={`/education/${item.slug}`} className="w-full">
+                    <Button variant="outline" className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-all">
+                      Derse Git
+                    </Button>
+                  </Link>
+                </CardFooter>
+              </Card>
+            ))
+          )}
+        </div>
+        <Link href="/education" className="sm:hidden mt-4 block">
+          <Button variant="outline" className="w-full">
+            Tüm Eğitimler <ArrowRight className="ml-2 h-4 w-4" />
+          </Button>
+        </Link>
+      </section>
+
+      {/* Writer Community Teaser */}
+      <section className="bg-primary/5 rounded-2xl p-8 md:p-12 border border-primary/20 text-center space-y-6">
+        <PenTool className="h-12 w-12 text-primary mx-auto" />
+        <h2 className="text-3xl font-bold tracking-tight">Yazar Ekosistemimize Katılın</h2>
+        <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+          Finansal analiz ve piyasa öngörülerinizi geniş bir kitleyle paylaşın. Platformumuzda onaylı yazar olun.
+        </p>
+        <Link href="/writer">
+          <Button size="lg" className="mt-4">
+            Yazar Platformu <ArrowRight className="ml-2 h-5 w-5" />
           </Button>
         </Link>
       </section>
