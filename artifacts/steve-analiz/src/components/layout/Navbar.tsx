@@ -16,7 +16,7 @@ export function Navbar() {
         <div className="mr-4 hidden md:flex">
           <Link href="/" className="mr-6 flex items-center gap-3">
             <img src="/logo.png" alt="SteveAnaliz.Web Logo" className="h-14 w-14 rounded-md object-contain" />
-            <span className="hidden font-bold sm:inline-block tracking-tight text-xl">
+            <span className="font-display hidden font-bold sm:inline-block text-xl uppercase">
               SteveAnaliz<span className="text-primary">.Web</span>
             </span>
           </Link>
@@ -73,7 +73,7 @@ export function Navbar() {
           <div className="w-full flex-1 md:w-auto md:flex-none">
             {/* Mobile Nav could go here */}
             <div className="md:hidden flex items-center gap-2">
-              <Link href="/" className="flex items-center gap-2 font-bold text-lg">
+              <Link href="/" className="font-display flex items-center gap-2 font-bold text-lg uppercase">
                 <img src="/logo.png" alt="Logo" className="h-12 w-12 rounded-md object-contain" />
                 SteveAnaliz<span className="text-primary">.Web</span>
               </Link>
