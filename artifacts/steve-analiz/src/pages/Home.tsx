@@ -26,8 +26,8 @@ export default function Home() {
             SteveAnaliz.Web 2.0
           </Badge>
           <h1
-            className="text-3xl md:text-5xl font-bold tracking-tight text-foreground"
-            style={{ fontFamily: "'Space Grotesk', 'Inter', sans-serif", letterSpacing: "-0.02em" }}
+            className="text-2xl md:text-4xl font-bold uppercase text-foreground"
+            style={{ fontFamily: "'Orbitron', 'Chakra Petch', sans-serif", letterSpacing: "0.02em", lineHeight: 1.2 }}
           >
             Geleceğe Yönelik <br />
             <span className="text-primary">Finansal Analiz</span> Platformu
