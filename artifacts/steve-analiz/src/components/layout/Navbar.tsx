@@ -22,15 +22,6 @@ export function Navbar() {
           </Link>
           <nav className="flex items-center space-x-6 text-sm font-medium">
             <Link
-              href="/"
-              className={cn(
-                "transition-colors hover:text-foreground/80",
-                isActive("/") ? "text-foreground" : "text-foreground/60"
-              )}
-            >
-              Ana Sayfa
-            </Link>
-            <Link
               href="/blog"
               className={cn(
                 "transition-colors hover:text-foreground/80",
