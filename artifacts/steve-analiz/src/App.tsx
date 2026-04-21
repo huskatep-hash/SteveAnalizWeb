@@ -12,6 +12,8 @@ import Education from "@/pages/Education";
 import EducationDetail from "@/pages/EducationDetail";
 import Writer from "@/pages/Writer";
 import Vision from "@/pages/Vision";
+import Watchlist from "@/pages/Watchlist";
+import SteveAnalizAI from "@/pages/SteveAnalizAI";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -32,6 +34,8 @@ function Router() {
         <Route path="/education" component={Education} />
         <Route path="/education/:slug" component={EducationDetail} />
         <Route path="/writer" component={Writer} />
+        <Route path="/watchlist" component={Watchlist} />
+        <Route path="/ai" component={SteveAnalizAI} />
         <Route path="/about" component={Vision} />
         <Route component={NotFound} />
       </Switch>
