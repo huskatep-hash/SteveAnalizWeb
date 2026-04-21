@@ -58,6 +58,24 @@ export function Navbar() {
               Yazarlar
             </Link>
             <Link
+              href="/watchlist"
+              className={cn(
+                "transition-colors hover:text-foreground/80",
+                isActive("/watchlist") ? "text-foreground" : "text-foreground/60"
+              )}
+            >
+              İzleme Listesi
+            </Link>
+            <Link
+              href="/ai"
+              className={cn(
+                "transition-colors hover:text-foreground/80 inline-flex items-center gap-1",
+                isActive("/ai") ? "text-primary" : "text-primary/80"
+              )}
+            >
+              SteveAnalizAI
+            </Link>
+            <Link
               href="/about"
               className={cn(
                 "transition-colors hover:text-foreground/80",
