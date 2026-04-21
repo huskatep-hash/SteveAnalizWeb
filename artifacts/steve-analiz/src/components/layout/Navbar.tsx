@@ -14,7 +14,8 @@ export function Navbar() {
     <nav className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 max-w-screen-xl items-center mx-auto px-4">
         <div className="mr-4 hidden md:flex">
-          <Link href="/" className="mr-6 flex items-center space-x-2">
+          <Link href="/" className="mr-6 flex items-center gap-3">
+            <img src="/logo.png" alt="Steve Analiz.web Logo" className="h-9 w-9 rounded object-contain" />
             <span className="hidden font-bold sm:inline-block tracking-tight text-lg">
               STEVE ANALİZ<span className="text-primary">.WEB</span>
             </span>
@@ -71,8 +72,11 @@ export function Navbar() {
         <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
           <div className="w-full flex-1 md:w-auto md:flex-none">
             {/* Mobile Nav could go here */}
-            <div className="md:hidden flex items-center space-x-4">
-              <Link href="/" className="font-bold text-lg">STEVE ANALİZ<span className="text-primary">.WEB</span></Link>
+            <div className="md:hidden flex items-center gap-2">
+              <Link href="/" className="flex items-center gap-2 font-bold text-lg">
+                <img src="/logo.png" alt="Logo" className="h-8 w-8 rounded object-contain" />
+                STEVE ANALİZ<span className="text-primary">.WEB</span>
+              </Link>
             </div>
           </div>
           <nav className="flex items-center space-x-2">
