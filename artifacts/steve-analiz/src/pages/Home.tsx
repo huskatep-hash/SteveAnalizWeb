@@ -23,7 +23,7 @@ export default function Home() {
       <section className="py-20 flex flex-col items-center text-center space-y-8">
         <div className="space-y-4 max-w-4xl">
           <Badge variant="outline" className="px-3 py-1 text-sm border-primary/50 text-primary uppercase tracking-widest">
-            STEVE ANALİZ.WEB 2.0
+            SteveAnaliz.Web 2.0
           </Badge>
           <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight text-foreground">
             Geleceğe Yönelik <br />

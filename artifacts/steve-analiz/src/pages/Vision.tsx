@@ -14,7 +14,7 @@ export default function Vision() {
         
         <blockquote className="relative z-10 space-y-6">
           <p className="text-xl md:text-2xl leading-relaxed text-foreground font-serif italic">
-            "STEVE ANALİZ.WEB 2.0, genç yatırımcıların, yazanların ve analiz sevenlerin bir araya geldiği bir bilgi ve fikir paylaşımı platformudur. Yapay zeka destekli araçlarla finansal verileri inceleyerek analizler üretir, bu sayede daha erişilebilir bir finansal okuryazarlık ortamı oluşturmayı hedefler. Geleceğin Vizyonerleri adı altında finans, teknoloji ve yatırım alanlarında genç yazarların içeriklerini paylaşmasına destek olur."
+            "SteveAnaliz.Web 2.0, genç yatırımcıların, yazanların ve analiz sevenlerin bir araya geldiği bir bilgi ve fikir paylaşımı platformudur. Yapay zeka destekli araçlarla finansal verileri inceleyerek analizler üretir, bu sayede daha erişilebilir bir finansal okuryazarlık ortamı oluşturmayı hedefler. Geleceğin Vizyonerleri adı altında finans, teknoloji ve yatırım alanlarında genç yazarların içeriklerini paylaşmasına destek olur."
           </p>
           <footer className="text-right text-primary font-medium text-lg">
             — Devrim Çağlayan, SteveAnaliz.web
