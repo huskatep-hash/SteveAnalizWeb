@@ -15,9 +15,9 @@ export function Navbar() {
       <div className="container flex h-16 max-w-screen-xl items-center mx-auto px-4">
         <div className="mr-4 hidden md:flex">
           <Link href="/" className="mr-6 flex items-center gap-3">
-            <img src="/logo.png" alt="Steve Analiz.web Logo" className="h-9 w-9 rounded object-contain" />
-            <span className="hidden font-bold sm:inline-block tracking-tight text-lg">
-              STEVE ANALİZ<span className="text-primary">.WEB</span>
+            <img src="/logo.png" alt="SteveAnaliz.Web Logo" className="h-14 w-14 rounded-md object-contain" />
+            <span className="hidden font-bold sm:inline-block tracking-tight text-xl">
+              SteveAnaliz<span className="text-primary">.Web</span>
             </span>
           </Link>
           <nav className="flex items-center space-x-6 text-sm font-medium">
@@ -74,8 +74,8 @@ export function Navbar() {
             {/* Mobile Nav could go here */}
             <div className="md:hidden flex items-center gap-2">
               <Link href="/" className="flex items-center gap-2 font-bold text-lg">
-                <img src="/logo.png" alt="Logo" className="h-8 w-8 rounded object-contain" />
-                STEVE ANALİZ<span className="text-primary">.WEB</span>
+                <img src="/logo.png" alt="Logo" className="h-12 w-12 rounded-md object-contain" />
+                SteveAnaliz<span className="text-primary">.Web</span>
               </Link>
             </div>
           </div>
