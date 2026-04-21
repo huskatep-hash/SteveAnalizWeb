@@ -25,10 +25,7 @@ export default function Home() {
           <Badge variant="outline" className="px-3 py-1 text-sm border-primary/50 text-primary uppercase tracking-widest">
             SteveAnaliz.Web 2.0
           </Badge>
-          <h1
-            className="text-2xl md:text-4xl font-bold uppercase text-foreground"
-            style={{ fontFamily: "'Orbitron', 'Chakra Petch', sans-serif", letterSpacing: "0.02em", lineHeight: 1.2 }}
-          >
+          <h1 className="text-2xl md:text-4xl font-bold uppercase text-foreground leading-tight">
             Geleceğe Yönelik <br />
             <span className="text-primary">Finansal Analiz</span> Platformu
           </h1>
