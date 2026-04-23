@@ -35,7 +35,7 @@ async function fetchYahoo(yahooSymbol: string) {
   return { price, change, changePercent };
 }
 
-router.get("/api/market", async (req: Request, res: Response) => {
+router.get("/market", async (req: Request, res: Response) => {
   try {
     // Cache kontrolü
     if (cache && Date.now() - cache.time < CACHE_MS) {
