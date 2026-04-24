@@ -20,7 +20,8 @@
     "pino": "^9",
     "pino-http": "^10",
     "groq-sdk": "^0.9.0",
-    "node-cron": "^3.0.3"
+    "node-cron": "^3.0.3",
+    "resend": "^3.0.0"
   },
   "devDependencies": {
     "@types/cookie-parser": "^1.4.10",

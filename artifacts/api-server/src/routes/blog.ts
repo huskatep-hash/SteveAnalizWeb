@@ -33,7 +33,7 @@ router.get("/blog", async (req, res): Promise<void> => {
 
   const { tag, type } = queryParsed.data;
 
-  const conditions = [];
+  const conditions = [eq(blogPostsTable.status, "published")];
   if (tag) conditions.push(sql`${tag} = ANY(${blogPostsTable.tags})`);
   if (type) conditions.push(eq(blogPostsTable.type, type));
 
