@@ -1,3 +1,5 @@
+import { gunlukBlogYaz } from "./scheduler";
+import cron from "node-cron";
 import app from "./app";
 import { logger } from "./lib/logger";
 
@@ -23,3 +25,7 @@ app.listen(port, (err) => {
 
   logger.info({ port }, "Server listening");
 });
+
+// Her sabah 06:00 Istanbul saati
+cron.schedule("0 6 * * *", gunlukBlogYaz, { timezone: "Europe/Istanbul" });
+console.log("Scheduler aktif — her sabah 06:00");
