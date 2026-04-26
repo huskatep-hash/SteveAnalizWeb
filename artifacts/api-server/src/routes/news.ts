@@ -72,13 +72,39 @@ router.post("/news", async (req: Request, res: Response) => {
 
 export default router;
 
-// POST /api/news/trigger - Manuel haber cekme (test)
 router.post("/news/trigger", async (req: Request, res: Response) => {
+  res.json({ success: true, message: "Haberler cekiliyor..." });
+  const NEWS_API_KEY = process.env.NEWS_API_KEY;
+  if (!NEWS_API_KEY) { console.error("NEWS_API_KEY eksik!"); return; }
   try {
-    const { gunlukHaberleriCek } = await import("../news-scheduler");
-    await gunlukHaberleriCek();
-    res.json({ success: true, message: "Haberler cekiliyor, email kontrol edin." });
-  } catch (e: any) {
-    res.status(500).json({ error: e.message });
-  }
+    console.log("Haberler cekiliyor...");
+    const url = `https://newsapi.org/v2/everything?q=ekonomi+borsa+faiz&language=tr&sortBy=publishedAt&pageSize=3&apiKey=${NEWS_API_KEY}`;
+    const r = await fetch(url);
+    const data = await r.json() as any;
+    const articles = data.articles ?? [];
+    console.log(`${articles.length} haber bulundu.`);
+    for (const article of articles) {
+      try {
+        const slug = (article.title ?? "haber").toLowerCase().replace(/[^a-z0-9]+/g, "-").slice(0, 50) + "-" + Date.now();
+        const [post] = await db.insert(newsPostsTable).values({
+          title: article.title ?? "Basliksiz",
+          slug,
+          author: "SteveAnalizAI",
+          summary: article.description ?? "",
+          content: article.content ?? article.description ?? "",
+          category: "Makro",
+          tags: ["ekonomi", "guncel"],
+          status: "draft",
+          hapHeadline: article.title ?? null,
+          hapContext: article.description ?? null,
+          hapImpact: null,
+          hapNumbers: [],
+          hapQuote: null,
+        }).returning();
+        console.log(`Haber kaydedildi: ${post.id} - ${post.title}`);
+      } catch (e: any) { console.error("Kayit hatasi:", e.message); }
+    }
+  } catch (e: any) { console.error("Cekme hatasi:", e.message); }
 });
+
+export default router;
