@@ -20,3 +20,4 @@
 export * from "./blog";
 export * from "./education";
 export * from "./writers";
+export * from "./news";
