@@ -20,52 +20,30 @@ export function Navbar() {
               SteveAnaliz<span className="text-primary">.Web</span>
             </span>
           </Link>
-          <nav className="flex items-center space-x-6 text-sm font-medium">
-            <Link
-              href="/blog"
-              className={cn("transition-colors hover:text-foreground/80", isActive("/blog") ? "text-foreground" : "text-foreground/60")}
-            >
+          <div className="flex items-center space-x-6 text-sm font-medium">
+            <Link href="/blog" className={cn("transition-colors hover:text-foreground/80", isActive("/blog") ? "text-foreground" : "text-foreground/60")}>
               Blog
             </Link>
-            <Link
-              href="/news"
-              className={cn("transition-colors hover:text-foreground/80 font-semibold", isActive("/news") ? "text-primary" : "text-primary/70")}
-            >
+            <Link href="/news" className={cn("transition-colors hover:text-foreground/80 font-semibold", isActive("/news") ? "text-primary" : "text-primary/70")}>
               Haberler
             </Link>
-            <Link
-              href="/education"
-              className={cn("transition-colors hover:text-foreground/80", isActive("/education") ? "text-foreground" : "text-foreground/60")}
-            >
+            <Link href="/education" className={cn("transition-colors hover:text-foreground/80", isActive("/education") ? "text-foreground" : "text-foreground/60")}>
               Eğitim
             </Link>
-            <Link
-              href="/writer"
-              className={cn("transition-colors hover:text-foreground/80", isActive("/writer") ? "text-foreground" : "text-foreground/60")}
-            >
+            <Link href="/writer" className={cn("transition-colors hover:text-foreground/80", isActive("/writer") ? "text-foreground" : "text-foreground/60")}>
               Yazarlar
             </Link>
-            <Link
-              href="/watchlist"
-              className={cn("transition-colors hover:text-foreground/80", isActive("/watchlist") ? "text-foreground" : "text-foreground/60")}
-            >
+            <Link href="/watchlist" className={cn("transition-colors hover:text-foreground/80", isActive("/watchlist") ? "text-foreground" : "text-foreground/60")}>
               İzleme Listesi
             </Link>
-            <Link
-              href="/ai"
-              className={cn("transition-colors hover:text-foreground/80 inline-flex items-center gap-1", isActive("/ai") ? "text-primary" : "text-primary/80")}
-            >
+            <Link href="/ai" className={cn("transition-colors hover:text-foreground/80", isActive("/ai") ? "text-primary" : "text-primary/80")}>
               SteveAnalizAI
             </Link>
-            <Link
-              href="/about"
-              className={cn("transition-colors hover:text-foreground/80", isActive("/about") ? "text-foreground" : "text-foreground/60")}
-            >
+            <Link href="/about" className={cn("transition-colors hover:text-foreground/80", isActive("/about") ? "text-foreground" : "text-foreground/60")}>
               Vizyon
             </Link>
-          </nav>
+          </div>
         </div>
-
         <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
           <div className="w-full flex-1 md:w-auto md:flex-none">
             <div className="md:hidden flex items-center gap-2">
@@ -75,16 +53,16 @@ export function Navbar() {
               </Link>
             </div>
           </div>
-          <nav className="flex items-center space-x-2">
+          <div className="flex items-center space-x-2">
             
               href="https://youtube.com/@steveanalizweb"
               target="_blank"
               rel="noreferrer"
-              className="inline-flex h-9 items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
+              className="inline-flex h-9 items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90"
             >
               YouTube Kanalı
             </a>
-          </nav>
+          </div>
         </div>
       </div>
     </nav>
