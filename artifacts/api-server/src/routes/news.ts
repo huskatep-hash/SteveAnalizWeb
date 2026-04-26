@@ -71,3 +71,14 @@ router.post("/news", async (req: Request, res: Response) => {
 });
 
 export default router;
+
+// POST /api/news/trigger - Manuel haber cekme (test)
+router.post("/news/trigger", async (req: Request, res: Response) => {
+  try {
+    const { gunlukHaberleriCek } = await import("../news-scheduler");
+    await gunlukHaberleriCek();
+    res.json({ success: true, message: "Haberler cekiliyor, email kontrol edin." });
+  } catch (e: any) {
+    res.status(500).json({ error: e.message });
+  }
+});
