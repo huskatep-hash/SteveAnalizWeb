@@ -70,7 +70,6 @@ router.post("/news", async (req: Request, res: Response) => {
   }
 });
 
-export default router;
 
 router.post("/news/trigger", async (req: Request, res: Response) => {
   res.json({ success: true, message: "Haberler cekiliyor..." });
