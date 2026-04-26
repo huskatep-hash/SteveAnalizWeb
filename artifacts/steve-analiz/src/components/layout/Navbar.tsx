@@ -23,55 +23,43 @@ export function Navbar() {
           <nav className="flex items-center space-x-6 text-sm font-medium">
             <Link
               href="/blog"
-              className={cn(
-                "transition-colors hover:text-foreground/80",
-                isActive("/blog") ? "text-foreground" : "text-foreground/60"
-              )}
+              className={cn("transition-colors hover:text-foreground/80", isActive("/blog") ? "text-foreground" : "text-foreground/60")}
             >
               Blog
             </Link>
             <Link
+              href="/news"
+              className={cn("transition-colors hover:text-foreground/80 font-semibold", isActive("/news") ? "text-primary" : "text-primary/70")}
+            >
+              Haberler
+            </Link>
+            <Link
               href="/education"
-              className={cn(
-                "transition-colors hover:text-foreground/80",
-                isActive("/education") ? "text-foreground" : "text-foreground/60"
-              )}
+              className={cn("transition-colors hover:text-foreground/80", isActive("/education") ? "text-foreground" : "text-foreground/60")}
             >
               Eğitim
             </Link>
             <Link
               href="/writer"
-              className={cn(
-                "transition-colors hover:text-foreground/80",
-                isActive("/writer") ? "text-foreground" : "text-foreground/60"
-              )}
+              className={cn("transition-colors hover:text-foreground/80", isActive("/writer") ? "text-foreground" : "text-foreground/60")}
             >
               Yazarlar
             </Link>
             <Link
               href="/watchlist"
-              className={cn(
-                "transition-colors hover:text-foreground/80",
-                isActive("/watchlist") ? "text-foreground" : "text-foreground/60"
-              )}
+              className={cn("transition-colors hover:text-foreground/80", isActive("/watchlist") ? "text-foreground" : "text-foreground/60")}
             >
               İzleme Listesi
             </Link>
             <Link
               href="/ai"
-              className={cn(
-                "transition-colors hover:text-foreground/80 inline-flex items-center gap-1",
-                isActive("/ai") ? "text-primary" : "text-primary/80"
-              )}
+              className={cn("transition-colors hover:text-foreground/80 inline-flex items-center gap-1", isActive("/ai") ? "text-primary" : "text-primary/80")}
             >
               SteveAnalizAI
             </Link>
             <Link
               href="/about"
-              className={cn(
-                "transition-colors hover:text-foreground/80",
-                isActive("/about") ? "text-foreground" : "text-foreground/60"
-              )}
+              className={cn("transition-colors hover:text-foreground/80", isActive("/about") ? "text-foreground" : "text-foreground/60")}
             >
               Vizyon
             </Link>
@@ -80,7 +68,6 @@ export function Navbar() {
 
         <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
           <div className="w-full flex-1 md:w-auto md:flex-none">
-            {/* Mobile Nav could go here */}
             <div className="md:hidden flex items-center gap-2">
               <Link href="/" className="flex items-center gap-2 font-bold text-lg tracking-tight">
                 <img src="/logo.png" alt="Logo" className="h-12 w-12 rounded-md object-contain" />
@@ -89,7 +76,7 @@ export function Navbar() {
             </div>
           </div>
           <nav className="flex items-center space-x-2">
-            <a
+            
               href="https://youtube.com/@steveanalizweb"
               target="_blank"
               rel="noreferrer"
