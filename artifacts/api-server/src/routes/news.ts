@@ -2,6 +2,7 @@ import { Router, type IRouter, type Request, type Response } from "express";
 import { db } from "@workspace/db";
 import { newsPostsTable } from "@workspace/db";
 import { eq, desc } from "drizzle-orm";
+import { sendApprovalEmail } from "./approval";
 
 const router: IRouter = Router();
 
@@ -42,7 +43,8 @@ router.post("/news/trigger", async (req: Request, res: Response) => {
     console.log(`${articles.length} haber bulundu.`);
     for (const article of articles) {
       try {
-        const slug = (article.title ?? "haber").toLowerCase().replace(/[^a-z0-9]+/g, "-").slice(0, 50) + "-" + Date.now();
+        const slug = (article.title ?? "haber").toLowerCase()
+          .replace(/[^a-z0-9]+/g, "-").slice(0, 50) + "-" + Date.now();
         const [post] = await db.insert(newsPostsTable).values({
           title: article.title ?? "Basliksiz",
           slug,
@@ -59,23 +61,39 @@ router.post("/news/trigger", async (req: Request, res: Response) => {
           hapQuote: null,
         }).returning();
         console.log(`Haber kaydedildi: ${post.id} - ${post.title}`);
-      } catch (e: any) { console.error("Kayit hatasi:", e.message); }
+        await sendApprovalEmail(post.id, post.title, post.summary, post.content);
+        console.log(`Email gonderildi: ${post.id}`);
+      } catch (e: any) {
+        console.error("Kayit hatasi:", e.message);
+      }
     }
-  } catch (e: any) { console.error("Cekme hatasi:", e.message); }
+  } catch (e: any) {
+    console.error("Cekme hatasi:", e.message);
+  }
 });
 
 router.post("/news", async (req: Request, res: Response) => {
   try {
-    const { title, slug, summary, content, category, tags, hapHeadline, hapContext, hapImpact, hapNumbers, hapQuote, status } = req.body;
+    const {
+      title, slug, summary, content, category,
+      tags, hapHeadline, hapContext, hapImpact,
+      hapNumbers, hapQuote, status
+    } = req.body;
     if (!title || !slug || !content) {
       return res.status(400).json({ error: "title, slug ve content zorunludur." });
     }
     const [post] = await db.insert(newsPostsTable).values({
-      title, slug, summary: summary ?? "", content,
-      category: category ?? "Makro", tags: tags ?? [],
-      hapHeadline: hapHeadline ?? null, hapContext: hapContext ?? null,
-      hapImpact: hapImpact ?? null, hapNumbers: hapNumbers ?? [],
-      hapQuote: hapQuote ?? null, status: status ?? "draft",
+      title, slug,
+      summary: summary ?? "",
+      content,
+      category: category ?? "Makro",
+      tags: tags ?? [],
+      hapHeadline: hapHeadline ?? null,
+      hapContext: hapContext ?? null,
+      hapImpact: hapImpact ?? null,
+      hapNumbers: hapNumbers ?? [],
+      hapQuote: hapQuote ?? null,
+      status: status ?? "draft",
     }).returning();
     res.status(201).json(post);
   } catch (e: any) {
