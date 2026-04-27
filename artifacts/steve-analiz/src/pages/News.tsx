@@ -36,6 +36,19 @@ const CATEGORY_COLORS: Record<string, string> = {
   Piyasa: "bg-purple-500/10 text-purple-400 border-purple-500/20",
 };
 
+function SafeContent({ content }: { content: string }) {
+  return (
+    <div className="space-y-3">
+      {content.split("\n").map((line, i) => {
+        if (line.startsWith("## ")) return <h2 key={i} className="text-xl font-bold mt-6 mb-2 text-foreground">{line.slice(3)}</h2>;
+        if (line.startsWith("### ")) return <h3 key={i} className="text-lg font-semibold mt-4 mb-2 text-foreground">{line.slice(4)}</h3>;
+        if (line.trim() === "") return <br key={i} />;
+        return <p key={i} className="leading-relaxed text-foreground/90">{line}</p>;
+      })}
+    </div>
+  );
+}
+
 export default function News() {
   const [news, setNews] = useState<NewsPost[]>([]);
   const [loading, setLoading] = useState(true);
@@ -56,9 +69,8 @@ export default function News() {
     return (
       <div className="max-w-3xl mx-auto space-y-6 animate-in fade-in duration-500">
         <button onClick={() => setSelected(null)} className="text-sm text-muted-foreground hover:text-foreground flex items-center gap-2">
-          ← Haberlere Dön
+          Haberlere Don
         </button>
-
         <div className="space-y-2">
           <Badge className={CATEGORY_COLORS[selected.category] ?? ""}>{selected.category}</Badge>
           <h1 className="text-3xl font-bold">{selected.title}</h1>
@@ -69,7 +81,6 @@ export default function News() {
             <span>{new Date(selected.createdAt).toLocaleDateString("tr-TR")}</span>
           </div>
         </div>
-
         {selected.hapHeadline && (
           <Card className="border-primary/30 bg-primary/5">
             <CardHeader className="pb-2">
@@ -84,133 +95,3 @@ export default function News() {
               )}
               {selected.hapImpact && (
                 <div>
-                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">Senin için ne ifade ediyor?</p>
-                  <p className="text-sm">{selected.hapImpact}</p>
-                </div>
-              )}
-              {selected.hapNumbers && selected.hapNumbers.length > 0 && (
-                <div className="grid grid-cols-3 gap-3">
-                  {selected.hapNumbers.map((n, i) => (
-                    <div key={i} className="bg-card rounded-lg p-3 text-center border border-border/40">
-                      <div className="flex items-center justify-center gap-1 mb-1">
-                        {n.change === "up" && <TrendingUp className="h-3 w-3 text-green-500" />}
-                        {n.change === "down" && <TrendingDown className="h-3 w-3 text-red-500" />}
-                        {n.change === "neutral" && <Minus className="h-3 w-3 text-muted-foreground" />}
-                        <span className="text-xs text-muted-foreground">{n.label}</span>
-                      </div>
-                      <p className="font-bold text-sm">{n.value}</p>
-                    </div>
-                  ))}
-                </div>
-              )}
-              {selected.hapQuote && (
-                <blockquote className="border-l-2 border-primary pl-4 italic text-sm text-muted-foreground">
-                  "{selected.hapQuote}"
-                </blockquote>
-              )}
-            </CardContent>
-          </Card>
-        )}
-
-        <div className="prose prose-invert max-w-none">
-          <div className="space-y-3">
-  {selected.content.split("\n").map((line, i) => {
-    if (line.startsWith("## ")) return <h2 key={i} className="text-xl font-bold mt-6 mb-2">{line.slice(3)}</h2>;
-    if (line.startsWith("### ")) return <h3 key={i} className="text-lg font-semibold mt-4 mb-2">{line.slice(4)}</h3>;
-    if (line.trim() === "") return <br key={i} />;
-    return <p key={i} className="leading-relaxed text-foreground/90">{line}</p>;
-  })}
-</div>
-
-        <div className="flex flex-wrap gap-2 pt-4 border-t border-border/40">
-          {selected.tags.map(tag => (
-            <Badge key={tag} variant="outline" className="text-xs">{tag}</Badge>
-          ))}
-        </div>
-
-        <p className="text-xs text-muted-foreground border border-border/40 rounded-lg p-3">
-          Steve Analiz, SPK lisanslı bir yatırım danışmanı değildir. Sunulan tüm veriler yalnızca bilgilendirme ve eğitim amaçlıdır.
-        </p>
-      </div>
-    );
-  }
-
-  return (
-    <div className="space-y-8 animate-in fade-in duration-500">
-      <div className="space-y-3 max-w-3xl">
-        <Badge variant="outline" className="px-3 py-1 text-sm border-primary/50 text-primary uppercase tracking-widest">
-          <Newspaper className="h-3 w-3 mr-2" /> Hap Haber
-        </Badge>
-        <h1 className="text-3xl md:text-5xl font-bold tracking-tight uppercase">
-          Piyasayı <span className="text-primary">3 Dakikada</span> Yakala
-        </h1>
-        <p className="text-xl text-muted-foreground">
-          Karmaşık ekonomi haberlerini sade, anlaşılır ve hızlı formatla.
-        </p>
-      </div>
-
-      <div className="flex flex-wrap gap-2">
-        {categories.map(cat => (
-          <button
-            key={cat}
-            onClick={() => setActiveCategory(cat)}
-            className={`px-4 py-1.5 rounded-full text-sm font-medium border transition-colors ${
-              activeCategory === cat
-                ? "bg-primary text-primary-foreground border-primary"
-                : "border-border/40 text-muted-foreground hover:border-primary/40"
-            }`}
-          >
-            {cat === "Tumu" ? "Tümü" : cat}
-          </button>
-        ))}
-      </div>
-
-      {loading ? (
-        <div className="text-center py-20 text-muted-foreground">Haberler yükleniyor...</div>
-      ) : filtered.length === 0 ? (
-        <div className="text-center py-20 border border-border/40 rounded-xl text-muted-foreground">
-          Bu kategoride henüz haber yok.
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filtered.map(item => (
-            <Card
-              key={item.id}
-              className="cursor-pointer hover:border-primary/40 transition-all duration-300 group"
-              onClick={() => setSelected(item)}
-            >
-              <CardHeader className="pb-2">
-                <div className="flex justify-between items-start mb-2">
-                  <Badge className={`text-xs ${CATEGORY_COLORS[item.category] ?? ""}`}>
-                    {item.category}
-                  </Badge>
-                  <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                    <Clock className="h-3 w-3" />
-                    {item.readTime}
-                  </div>
-                </div>
-                <CardTitle className="text-base leading-snug group-hover:text-primary transition-colors line-clamp-2">
-                  {item.hapHeadline ?? item.title}
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <p className="text-sm text-muted-foreground line-clamp-2">{item.summary}</p>
-                {item.hapContext && (
-                  <div className="bg-muted/30 rounded-lg p-2">
-                    <p className="text-xs text-muted-foreground line-clamp-2">{item.hapContext}</p>
-                  </div>
-                )}
-                <div className="flex justify-between items-center pt-1">
-                  <span className="text-xs text-muted-foreground">
-                    {new Date(item.createdAt).toLocaleDateString("tr-TR")}
-                  </span>
-                  <span className="text-xs text-primary group-hover:underline">Oku →</span>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
