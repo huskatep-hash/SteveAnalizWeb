@@ -113,8 +113,14 @@ export default function News() {
         )}
 
         <div className="prose prose-invert max-w-none">
-          <div dangerouslySetInnerHTML={{ __html: selected.content.replace(/\n/g, "<br/>") }} />
-        </div>
+          <div className="space-y-3">
+  {selected.content.split("\n").map((line, i) => {
+    if (line.startsWith("## ")) return <h2 key={i} className="text-xl font-bold mt-6 mb-2">{line.slice(3)}</h2>;
+    if (line.startsWith("### ")) return <h3 key={i} className="text-lg font-semibold mt-4 mb-2">{line.slice(4)}</h3>;
+    if (line.trim() === "") return <br key={i} />;
+    return <p key={i} className="leading-relaxed text-foreground/90">{line}</p>;
+  })}
+</div>
 
         <div className="flex flex-wrap gap-2 pt-4 border-t border-border/40">
           {selected.tags.map(tag => (
