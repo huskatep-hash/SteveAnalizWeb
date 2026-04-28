@@ -1,10 +1,6 @@
-import { useState } from "react";
-import { Link, useSearch } from "wouter";
-import { useListNewsPosts } from "@workspace/api-client-react";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { useState, useEffect } from "react";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Newspaper, Clock, TrendingUp, TrendingDown, Minus } from "lucide-react";
 
 interface HapNumber {
@@ -41,8 +37,20 @@ const CATEGORY_COLORS: Record<string, string> = {
 };
 
 export default function News() {
-  const { data: news, isLoading } = useListNewsPosts();
+  const [news, setNews] = useState<NewsPost[]>([]);
+  const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState<NewsPost | null>(null);
+  const [activeCategory, setActiveCategory] = useState("Tumu");
+
+  useEffect(() => {
+    fetch("/api/news?limit=50")
+      .then(r => r.json())
+      .then(data => { setNews(data); setLoading(false); })
+      .catch(() => setLoading(false));
+  }, []);
+
+  const categories = ["Tumu", "Makro", "Kripto", "Emtia", "Sirket", "Piyasa"];
+  const filtered = activeCategory === "Tumu" ? news : news.filter(n => n.category === activeCategory);
 
   if (selected) {
     return (
@@ -129,15 +137,30 @@ export default function News() {
           Karmaşık ekonomi haberlerini sade, anlaşılır ve hızlı formatla.
         </p>
       </div>
-      {isLoading ? (
-        <div className="text-center py-20 text-muted-foreground">Yükleniyor...</div>
-      ) : !news || news.length === 0 ? (
+      <div className="flex flex-wrap gap-2">
+        {categories.map(cat => (
+          <button
+            key={cat}
+            onClick={() => setActiveCategory(cat)}
+            className={`px-4 py-1.5 rounded-full text-sm font-medium border transition-colors ${
+              activeCategory === cat
+                ? "bg-primary text-primary-foreground border-primary"
+                : "border-border/40 text-muted-foreground hover:border-primary/40"
+            }`}
+          >
+            {cat === "Tumu" ? "Tümü" : cat}
+          </button>
+        ))}
+      </div>
+      {loading ? (
+        <div className="text-center py-20 text-muted-foreground">Haberler yükleniyor...</div>
+      ) : filtered.length === 0 ? (
         <div className="text-center py-20 border border-border/40 rounded-xl text-muted-foreground">
-          Henüz haber bulunmuyor.
+          Bu kategoride henüz haber yok.
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {news.map(item => (
+          {filtered.map(item => (
             <Card
               key={item.id}
               className="cursor-pointer hover:border-primary/40 transition-all duration-300 group"
