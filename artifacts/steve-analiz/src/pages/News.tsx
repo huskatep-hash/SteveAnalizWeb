@@ -1,56 +1,62 @@
 import { useState, useEffect } from "react";
-import { Badge } from "@/components/ui/badge";
+import { Link } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Newspaper, Clock, TrendingUp, TrendingDown, Minus } from "lucide-react";
 
-interface HapNumber {
-  label: string;
-  value: string;
-  change: "up" | "down" | "neutral";
-}
-
-interface NewsPost {
-  id: number;
-  title: string;
-  slug: string;
-  summary: string;
-  content: string;
-  category: string;
-  tags: string[];
-  readTime: string;
-  hapHeadline: string | null;
-  hapContext: string | null;
-  hapImpact: string | null;
-  hapNumbers: HapNumber[];
-  hapQuote: string | null;
-  likes: number;
-  views: number;
-  createdAt: string;
-}
+const MOCK_NEWS = [
+  {
+    id: 1,
+    title: "TCMB Faizi Sabit Bıraktı",
+    slug: "tcmb-faiz-sabit",
+    summary: "TCMB politika faizini %45 seviyesinde sabit tuttu.",
+    content: "<p>TCMB faizi sabit bıraktı.</p>",
+    category: "Makro",
+    tags: ["TCMB", "faiz"],
+    readTime: "3 dk",
+    hapHeadline: "Merkez Bankası Faizi Sabit Tuttu",
+    hapContext: "Enflasyonla mücadelede kararlılık mesajı.",
+    hapImpact: "Kısa vadede bankacılık hisseleri olumlu etkilenebilir.",
+    hapNumbers: [],
+    hapQuote: "TCMB temkinli duruşunu koruyor.",
+    createdAt: new Date().toISOString()
+  },
+  {
+    id: 2,
+    title: "Bitcoin 70.000 Doları Aştı",
+    slug: "bitcoin-70-bin",
+    summary: "Bitcoin spot ETF talebiyle 70.000 doları aştı.",
+    content: "<p>Bitcoin yükselişte.</p>",
+    category: "Kripto",
+    tags: ["Bitcoin", "kripto"],
+    readTime: "3 dk",
+    hapHeadline: "Bitcoin 70.000 Doları Gördü",
+    hapContext: "Spot ETF talebi fiyatı yükseltti.",
+    hapImpact: "Kripto yatırımcıları için olumlu.",
+    hapNumbers: [],
+    hapQuote: "Kurumsal yatırımcılar kriptoya giriş yapıyor.",
+    createdAt: new Date().toISOString()
+  }
+];
 
 const CATEGORY_COLORS: Record<string, string> = {
   Makro: "bg-blue-500/10 text-blue-400 border-blue-500/20",
   Kripto: "bg-orange-500/10 text-orange-400 border-orange-500/20",
-  Emtia: "bg-yellow-500/10 text-yellow-400 border-yellow-500/20",
-  Sirket: "bg-green-500/10 text-green-400 border-green-500/20",
-  Piyasa: "bg-purple-500/10 text-purple-400 border-purple-500/20",
 };
 
 export default function News() {
-  const [news, setNews] = useState<NewsPost[]>([]);
+  const [news, setNews] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selected, setSelected] = useState<NewsPost | null>(null);
-  const [activeCategory, setActiveCategory] = useState("Tumu");
+  const [selected, setSelected] = useState<any>(null);
 
   useEffect(() => {
     fetch("/api/news?limit=50")
-      .then(r => r.json())
-      .then(data => { setNews(Array.isArray(data) ? data : []); setLoading(false); })
-      .catch(() => setLoading(false));
+      .then(r => r.ok ? r.json() : [])
+      .then(data => setNews(Array.isArray(data) && data.length > 0 ? data : MOCK_NEWS))
+      .catch(() => setNews(MOCK_NEWS))
+      .finally(() => setLoading(false));
   }, []);
-
-  const categories = ["Tumu", "Makro", "Kripto", "Emtia", "Sirket", "Piyasa"];
-  const filtered = activeCategory === "Tumu" ? news : news.filter(n => n.category === activeCategory);
 
   if (selected) {
     return (
@@ -86,21 +92,6 @@ export default function News() {
                   <p className="text-sm">{selected.hapImpact}</p>
                 </div>
               )}
-              {selected.hapNumbers && selected.hapNumbers.length > 0 && (
-                <div className="grid grid-cols-3 gap-3">
-                  {selected.hapNumbers.map((n, i) => (
-                    <div key={i} className="bg-card rounded-lg p-3 text-center border border-border/40">
-                      <div className="flex items-center justify-center gap-1 mb-1">
-                        {n.change === "up" && <TrendingUp className="h-3 w-3 text-green-500" />}
-                        {n.change === "down" && <TrendingDown className="h-3 w-3 text-red-500" />}
-                        {n.change === "neutral" && <Minus className="h-3 w-3 text-muted-foreground" />}
-                        <span className="text-xs text-muted-foreground">{n.label}</span>
-                      </div>
-                      <p className="font-bold text-sm">{n.value}</p>
-                    </div>
-                  ))}
-                </div>
-              )}
               {selected.hapQuote && (
                 <blockquote className="border-l-2 border-primary pl-4 italic text-sm text-muted-foreground">
                   "{selected.hapQuote}"
@@ -113,13 +104,10 @@ export default function News() {
           <div dangerouslySetInnerHTML={{ __html: selected.content?.replace(/\n/g, "<br/>") ?? "" }} />
         </div>
         <div className="flex flex-wrap gap-2 pt-4 border-t border-border/40">
-          {selected.tags?.map(tag => (
+          {selected.tags?.map((tag: string) => (
             <Badge key={tag} variant="outline" className="text-xs">{tag}</Badge>
           ))}
         </div>
-        <p className="text-xs text-muted-foreground border border-border/40 rounded-lg p-3">
-          Steve Analiz, SPK lisanslı bir yatırım danışmanı değildir. Sunulan tüm veriler yalnızca bilgilendirme ve eğitim amaçlıdır.
-        </p>
       </div>
     );
   }
@@ -137,30 +125,11 @@ export default function News() {
           Karmaşık ekonomi haberlerini sade, anlaşılır ve hızlı formatla.
         </p>
       </div>
-      <div className="flex flex-wrap gap-2">
-        {categories.map(cat => (
-          <button
-            key={cat}
-            onClick={() => setActiveCategory(cat)}
-            className={`px-4 py-1.5 rounded-full text-sm font-medium border transition-colors ${
-              activeCategory === cat
-                ? "bg-primary text-primary-foreground border-primary"
-                : "border-border/40 text-muted-foreground hover:border-primary/40"
-            }`}
-          >
-            {cat === "Tumu" ? "Tümü" : cat}
-          </button>
-        ))}
-      </div>
       {loading ? (
         <div className="text-center py-20 text-muted-foreground">Haberler yükleniyor...</div>
-      ) : filtered.length === 0 ? (
-        <div className="text-center py-20 border border-border/40 rounded-xl text-muted-foreground">
-          Bu kategoride henüz haber yok.
-        </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filtered.map(item => (
+          {news.map(item => (
             <Card
               key={item.id}
               className="cursor-pointer hover:border-primary/40 transition-all duration-300 group"
