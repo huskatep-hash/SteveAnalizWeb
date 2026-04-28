@@ -40,8 +40,8 @@ app.use("/api", router);
 const staticDir = path.resolve(__dirname, "public");
 app.use(express.static(staticDir));
 
-// SPA fallback - API olmayan tüm istekler
-app.get("*", (_req, res) => {
+// SPA fallback - Express 5 uyumlu
+app.get("/{*splat}", (_req, res) => {
   res.sendFile(path.join(staticDir, "index.html"));
 });
 
