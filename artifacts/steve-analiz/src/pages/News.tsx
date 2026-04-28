@@ -45,7 +45,7 @@ export default function News() {
   useEffect(() => {
     fetch("/api/news?limit=50")
       .then(r => r.json())
-      .then(data => { setNews(data); setLoading(false); })
+      .then(data => { setNews(Array.isArray(data) ? data : []); setLoading(false); })
       .catch(() => setLoading(false));
   }, []);
 
