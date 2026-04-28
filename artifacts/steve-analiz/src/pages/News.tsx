@@ -1,9 +1,7 @@
-import { useState, useEffect } from "react";
-import { Link } from "wouter";
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Newspaper, Clock, TrendingUp, TrendingDown, Minus } from "lucide-react";
+import { Newspaper, Clock } from "lucide-react";
 
 const MOCK_NEWS = [
   {
@@ -18,7 +16,6 @@ const MOCK_NEWS = [
     hapHeadline: "Merkez Bankası Faizi Sabit Tuttu",
     hapContext: "Enflasyonla mücadelede kararlılık mesajı.",
     hapImpact: "Kısa vadede bankacılık hisseleri olumlu etkilenebilir.",
-    hapNumbers: [],
     hapQuote: "TCMB temkinli duruşunu koruyor.",
     createdAt: new Date().toISOString()
   },
@@ -34,7 +31,6 @@ const MOCK_NEWS = [
     hapHeadline: "Bitcoin 70.000 Doları Gördü",
     hapContext: "Spot ETF talebi fiyatı yükseltti.",
     hapImpact: "Kripto yatırımcıları için olumlu.",
-    hapNumbers: [],
     hapQuote: "Kurumsal yatırımcılar kriptoya giriş yapıyor.",
     createdAt: new Date().toISOString()
   }
@@ -46,17 +42,8 @@ const CATEGORY_COLORS: Record<string, string> = {
 };
 
 export default function News() {
-  const [news, setNews] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState<any>(null);
-
-  useEffect(() => {
-    fetch("/api/news?limit=50")
-      .then(r => r.ok ? r.json() : [])
-      .then(data => setNews(Array.isArray(data) && data.length > 0 ? data : MOCK_NEWS))
-      .catch(() => setNews(MOCK_NEWS))
-      .finally(() => setLoading(false));
-  }, []);
+  const news = MOCK_NEWS;
 
   if (selected) {
     return (
@@ -103,11 +90,6 @@ export default function News() {
         <div className="prose prose-invert max-w-none">
           <div dangerouslySetInnerHTML={{ __html: selected.content?.replace(/\n/g, "<br/>") ?? "" }} />
         </div>
-        <div className="flex flex-wrap gap-2 pt-4 border-t border-border/40">
-          {selected.tags?.map((tag: string) => (
-            <Badge key={tag} variant="outline" className="text-xs">{tag}</Badge>
-          ))}
-        </div>
       </div>
     );
   }
@@ -125,48 +107,44 @@ export default function News() {
           Karmaşık ekonomi haberlerini sade, anlaşılır ve hızlı formatla.
         </p>
       </div>
-      {loading ? (
-        <div className="text-center py-20 text-muted-foreground">Haberler yükleniyor...</div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {news.map(item => (
-            <Card
-              key={item.id}
-              className="cursor-pointer hover:border-primary/40 transition-all duration-300 group"
-              onClick={() => setSelected(item)}
-            >
-              <CardHeader className="pb-2">
-                <div className="flex justify-between items-start mb-2">
-                  <Badge className={`text-xs ${CATEGORY_COLORS[item.category] ?? ""}`}>
-                    {item.category}
-                  </Badge>
-                  <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                    <Clock className="h-3 w-3" />
-                    {item.readTime}
-                  </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {news.map(item => (
+          <Card
+            key={item.id}
+            className="cursor-pointer hover:border-primary/40 transition-all duration-300 group"
+            onClick={() => setSelected(item)}
+          >
+            <CardHeader className="pb-2">
+              <div className="flex justify-between items-start mb-2">
+                <Badge className={`text-xs ${CATEGORY_COLORS[item.category] ?? ""}`}>
+                  {item.category}
+                </Badge>
+                <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                  <Clock className="h-3 w-3" />
+                  {item.readTime}
                 </div>
-                <CardTitle className="text-base leading-snug group-hover:text-primary transition-colors line-clamp-2">
-                  {item.hapHeadline ?? item.title}
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <p className="text-sm text-muted-foreground line-clamp-2">{item.summary}</p>
-                {item.hapContext && (
-                  <div className="bg-muted/30 rounded-lg p-2">
-                    <p className="text-xs text-muted-foreground line-clamp-2">{item.hapContext}</p>
-                  </div>
-                )}
-                <div className="flex justify-between items-center pt-1">
-                  <span className="text-xs text-muted-foreground">
-                    {new Date(item.createdAt).toLocaleDateString("tr-TR")}
-                  </span>
-                  <span className="text-xs text-primary group-hover:underline">Oku →</span>
+              </div>
+              <CardTitle className="text-base leading-snug group-hover:text-primary transition-colors line-clamp-2">
+                {item.hapHeadline ?? item.title}
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <p className="text-sm text-muted-foreground line-clamp-2">{item.summary}</p>
+              {item.hapContext && (
+                <div className="bg-muted/30 rounded-lg p-2">
+                  <p className="text-xs text-muted-foreground line-clamp-2">{item.hapContext}</p>
                 </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      )}
+              )}
+              <div className="flex justify-between items-center pt-1">
+                <span className="text-xs text-muted-foreground">
+                  {new Date(item.createdAt).toLocaleDateString("tr-TR")}
+                </span>
+                <span className="text-xs text-primary group-hover:underline">Oku →</span>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
     </div>
   );
 }
