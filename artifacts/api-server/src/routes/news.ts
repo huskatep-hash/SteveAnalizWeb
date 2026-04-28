@@ -13,22 +13,11 @@ router.get("/news", async (req: Request, res: Response) => {
         id: newsPostsTable.id,
         title: newsPostsTable.title,
         slug: newsPostsTable.slug,
-        author: newsPostsTable.author,
         summary: newsPostsTable.summary,
         content: newsPostsTable.content,
         category: newsPostsTable.category,
         tags: newsPostsTable.tags,
-        status: newsPostsTable.status,
-        readTime: newsPostsTable.readTime,
-        hapHeadline: newsPostsTable.hapHeadline,
-        hapContext: newsPostsTable.hapContext,
-        hapImpact: newsPostsTable.hapImpact,
-        hapQuote: newsPostsTable.hapQuote,
-        likes: newsPostsTable.likes,
-        shares: newsPostsTable.shares,
-        views: newsPostsTable.views,
         createdAt: newsPostsTable.createdAt,
-        updatedAt: newsPostsTable.updatedAt,
       })
       .from(newsPostsTable)
       .where(eq(newsPostsTable.status, "published"))
@@ -36,8 +25,7 @@ router.get("/news", async (req: Request, res: Response) => {
       .limit(limit);
     res.json(news);
   } catch (e: unknown) {
-    const err = e as Error;
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: (e as Error).message });
   }
 });
 
@@ -48,22 +36,11 @@ router.get("/news/:slug", async (req: Request, res: Response) => {
         id: newsPostsTable.id,
         title: newsPostsTable.title,
         slug: newsPostsTable.slug,
-        author: newsPostsTable.author,
         summary: newsPostsTable.summary,
         content: newsPostsTable.content,
         category: newsPostsTable.category,
         tags: newsPostsTable.tags,
-        status: newsPostsTable.status,
-        readTime: newsPostsTable.readTime,
-        hapHeadline: newsPostsTable.hapHeadline,
-        hapContext: newsPostsTable.hapContext,
-        hapImpact: newsPostsTable.hapImpact,
-        hapQuote: newsPostsTable.hapQuote,
-        likes: newsPostsTable.likes,
-        shares: newsPostsTable.shares,
-        views: newsPostsTable.views,
         createdAt: newsPostsTable.createdAt,
-        updatedAt: newsPostsTable.updatedAt,
       })
       .from(newsPostsTable)
       .where(eq(newsPostsTable.slug, req.params.slug))
@@ -71,8 +48,7 @@ router.get("/news/:slug", async (req: Request, res: Response) => {
     if (!news.length) return res.status(404).json({ error: "Haber bulunamadi." });
     res.json(news[0]);
   } catch (e: unknown) {
-    const err = e as Error;
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: (e as Error).message });
   }
 });
 
