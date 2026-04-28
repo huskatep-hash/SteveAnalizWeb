@@ -5,7 +5,6 @@ import { requireAuth } from "../middlewares/auth";
 
 const router: IRouter = Router();
 
-// Haber listesi
 router.get("/news", async (req: Request, res: Response) => {
   try {
     const limit = Number(req.query.limit ?? "20");
@@ -19,7 +18,6 @@ router.get("/news", async (req: Request, res: Response) => {
   }
 });
 
-// Haber detay
 router.get("/news/:slug", async (req: Request, res: Response) => {
   try {
     const news = await db.select().from(newsPostsTable)
@@ -31,14 +29,13 @@ router.get("/news/:slug", async (req: Request, res: Response) => {
   }
 });
 
-// Manuel haber çekme tetikleyicisi (auth gerekli)
 router.post("/news/trigger", requireAuth, async (_req: Request, res: Response) => {
-  res.json({ success: true, message: "Haberler cekiliyor..." });
+  res.json({ success: true, message: "Haber tetiklendi, arka planda isleniyor..." });
   try {
     const { gunlukHaberleriCek } = await import("../news-scheduler");
-    await gunlukHaberleriCek();
+    gunlukHaberleriCek();
   } catch (e: any) {
-    console.error("Haber tetikleme hatasi:", e.message);
+    console.error("Trigger hatasi:", e.message);
   }
 });
 
