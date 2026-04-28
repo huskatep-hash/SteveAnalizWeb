@@ -8,8 +8,30 @@ import { ArrowRight, BookOpen } from "lucide-react";
 import { format } from "date-fns";
 import { tr } from "date-fns/locale";
 
+const MOCK_EDUCATION = [
+  {
+    id: 1,
+    title: "Temel Finans Eğitimi",
+    slug: "temel-finans-1",
+    summary: "Finansal okuryazarlığın temelleri.",
+    type: "education",
+    order: 1,
+    createdAt: new Date().toISOString()
+  },
+  {
+    id: 2,
+    title: "İleri Teknik Analiz",
+    slug: "teknik-analiz-1",
+    summary: "Teknik analiz araçları ve stratejileri.",
+    type: "education",
+    order: 2,
+    createdAt: new Date().toISOString()
+  }
+];
+
 export default function Education() {
   const { data: educationItems, isLoading } = useListEducationContent();
+  const safeItems = Array.isArray(educationItems) && educationItems.length > 0 ? educationItems : MOCK_EDUCATION;
 
   return (
     <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-700 pb-20">
@@ -31,7 +53,7 @@ export default function Education() {
       <section>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {isLoading ? (
-            Array.from({ length: 6 }).map((_, i) => (
+            Array.from({ length: 2 }).map((_, i) => (
               <Card key={i} className="flex flex-col h-full">
                 <CardHeader>
                   <Skeleton className="h-6 w-3/4 mb-2" />
@@ -42,12 +64,8 @@ export default function Education() {
                 </CardContent>
               </Card>
             ))
-          ) : educationItems?.length === 0 ? (
-            <div className="col-span-full py-12 text-center text-muted-foreground border border-dashed rounded-lg">
-              Henüz eğitim içeriği bulunmuyor.
-            </div>
           ) : (
-            educationItems?.map((item) => (
+            safeItems.map((item) => (
               <Card key={item.id} className="flex flex-col h-full bg-card hover:border-primary/40 transition-colors group">
                 <CardHeader>
                   <div className="flex justify-between items-start mb-3">
