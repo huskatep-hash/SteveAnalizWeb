@@ -33,16 +33,16 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// API routes - BUNLAR EN ÜSTTE OLMALI
 app.use("/api", router);
 
-// In production, serve the compiled React frontend
-if (process.env.NODE_ENV === "production") {
-  const staticDir = path.resolve(__dirname, "public");
-  app.use(express.static(staticDir));
-  // SPA fallback — all non-API routes return index.html
-  app.get("/{*splat}", (_req, res) => {
-    res.sendFile(path.join(staticDir, "index.html"));
-  });
-}
+// Statik dosyalar
+const staticDir = path.resolve(__dirname, "public");
+app.use(express.static(staticDir));
+
+// SPA fallback - API olmayan tüm istekler
+app.get("*", (_req, res) => {
+  res.sendFile(path.join(staticDir, "index.html"));
+});
 
 export default app;
