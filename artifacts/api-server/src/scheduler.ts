@@ -1,9 +1,18 @@
-import Groq from "groq-sdk";
 import { db, blogPostsTable } from "@workspace/db";
 import { sendApprovalEmail } from "./routes/approval";
 import cron from "node-cron";
 
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+// Groq opsiyonel
+let groq: any = null;
+try {
+  if (process.env.GROQ_API_KEY) {
+    const { default: Groq } = await import("groq-sdk");
+    groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+    console.log("Groq başlatıldı.");
+  }
+} catch {
+  console.warn("Groq başlatılamadı, blog yazısı otomasyonu devre dışı.");
+}
 
 const KONULAR = [
   "Turkiye enflasyon verileri ve portfoy stratejisi",
@@ -23,6 +32,11 @@ function makeSlug(text: string): string {
 }
 
 export async function gunlukBlogYaz(): Promise<void> {
+  if (!groq) {
+    console.warn("Groq API anahtarı olmadığı için blog yazısı otomasyonu atlandı.");
+    return;
+  }
+
   const konu = KONULAR[new Date().getDay() % KONULAR.length];
   console.log("Blog uretiliyor:", konu);
 
@@ -52,14 +66,12 @@ export async function gunlukBlogYaz(): Promise<void> {
     }).returning();
 
     console.log("Taslak kaydedildi:", slug);
-
     await sendApprovalEmail(post.id, konu, summary, content);
-
-  } catch (e: any) {
-    console.error("Scheduler hatasi:", e.message);
+  } catch (e: unknown) {
+    const message = e instanceof Error ? e.message : "Bilinmeyen hata";
+    console.error("Scheduler hatasi:", message);
   }
 }
 
-// Her sabah 06:00 Istanbul saati
 cron.schedule("0 6 * * *", gunlukBlogYaz, { timezone: "Europe/Istanbul" });
 console.log("Scheduler aktif — her sabah 06:00 Istanbul saati");
