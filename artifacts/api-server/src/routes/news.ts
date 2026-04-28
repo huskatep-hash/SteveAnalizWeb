@@ -8,7 +8,9 @@ const router: IRouter = Router();
 router.get("/news", async (req: Request, res: Response) => {
   try {
     const limit = Number(req.query.limit ?? "20");
-    const news = await db.select().from(newsPostsTable)
+    const news = await db
+      .select()
+      .from(newsPostsTable)
       .where(eq(newsPostsTable.status, "published"))
       .orderBy(desc(newsPostsTable.createdAt))
       .limit(limit);
@@ -20,8 +22,11 @@ router.get("/news", async (req: Request, res: Response) => {
 
 router.get("/news/:slug", async (req: Request, res: Response) => {
   try {
-    const news = await db.select().from(newsPostsTable)
-      .where(eq(newsPostsTable.slug, req.params.slug)).limit(1);
+    const news = await db
+      .select()
+      .from(newsPostsTable)
+      .where(eq(newsPostsTable.slug, req.params.slug))
+      .limit(1);
     if (!news.length) return res.status(404).json({ error: "Haber bulunamadi." });
     res.json(news[0]);
   } catch (e: any) {
