@@ -1,15 +1,23 @@
 import { Router, type IRouter, type Request, type Response } from "express";
-import OpenAI from "openai";
 
 const router: IRouter = Router();
 
-const openai = new OpenAI({
-  baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
-  apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY,
-});
+// OpenAI opsiyonel
+let openai: any = null;
+try {
+  if (process.env.OPENAI_API_KEY || process.env.AI_INTEGRATIONS_OPENAI_API_KEY) {
+    const { default: OpenAI } = await import("openai");
+    openai = new OpenAI({
+      baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
+      apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY || process.env.OPENAI_API_KEY,
+    });
+    console.log("OpenAI başlatıldı.");
+  }
+} catch {
+  console.warn("OpenAI başlatılamadı, AI chat devre dışı.");
+}
 
 const SYSTEM_PROMPT = `Sen SteveAnalizAI'sın — Türk genç yatırımcılara özel bir finansal analiz asistanısın.
-
 Görevin:
 - BIST (Borsa İstanbul), döviz, kripto ve emtia piyasaları hakkında net, sade ve eğitici cevaplar vermek
 - Yatırım kararı vermek yerine kullanıcının bilinçli karar almasını sağlayacak içgörüler sunmak
@@ -17,10 +25,14 @@ Görevin:
 - Türkçe yanıt ver, finansal terimleri kısaca açıkla
 - Veri tarihinin gerçek zamanlı olmadığını, bilgilerinin sınırlı olabileceğini belirt
 - Cevapların kısa ve öz olsun (en fazla 4-5 paragraf)
+Platform: SteveAnaliz.Web`;
 
-Platform: SteveAnaliz.Web — Devrim Çağlayan tarafından kurulan Türk finansal analiz topluluğu.`;
+router.post("/ai/chat", async (req: Request, res: Response): Promise<void> => {
+  if (!openai) {
+    res.status(503).json({ error: "AI servisi şu anda aktif değil." });
+    return;
+  }
 
-router.post("/ai/chat", async (req: Request, res: Response) => {
   try {
     const { message, history } = req.body as {
       message?: string;
@@ -28,7 +40,8 @@ router.post("/ai/chat", async (req: Request, res: Response) => {
     };
 
     if (!message || typeof message !== "string" || message.trim().length === 0) {
-      return res.status(400).json({ error: "Mesaj gereklidir." });
+      res.status(400).json({ error: "Mesaj gereklidir." });
+      return;
     }
 
     res.setHeader("Content-Type", "text/event-stream");
