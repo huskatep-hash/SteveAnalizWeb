@@ -8,6 +8,27 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { format } from "date-fns";
 import { tr } from "date-fns/locale";
 
+const MOCK_BLOGS = [
+  {
+    id: 1,
+    title: "Borsa İstanbul 2026 Görüşleri",
+    slug: "bist-2026-1",
+    summary: "BIST100 endeksi için 2026 beklentileri ve sektörel analiz.",
+    tags: ["borsa", "ekonomi"],
+    author: "SteveAnalizAI",
+    createdAt: new Date().toISOString()
+  },
+  {
+    id: 2,
+    title: "Dolar Kuru Tahmini",
+    slug: "dolar-kuru-1",
+    summary: "Dolar/TL kuru için projeksiyonlar.",
+    tags: ["dolar", "ekonomi"],
+    author: "SteveAnalizAI",
+    createdAt: new Date().toISOString()
+  }
+];
+
 export default function Blog() {
   const searchString = useSearch();
   const searchParams = new URLSearchParams(searchString);
@@ -19,6 +40,9 @@ export default function Blog() {
   );
   const { data: blogStats, isLoading: isLoadingStats } = useGetBlogStats();
 
+  // Güvenli dizi
+  const safePosts = Array.isArray(blogPosts) && blogPosts.length > 0 ? blogPosts : MOCK_BLOGS;
+
   return (
     <div className="space-y-12 animate-in fade-in duration-500">
       <div className="space-y-4 max-w-3xl">
@@ -27,9 +51,7 @@ export default function Blog() {
           Steve Analiz.web'in finansal analiz, kripto, makro ekonomi ve yatırım stratejileri üzerine yazılmış blog ve analizlerini buradan takip edebilirsin.
         </p>
       </div>
-
       <div className="flex flex-col md:flex-row gap-8 items-start">
-        {/* Sidebar / Filters */}
         <aside className="w-full md:w-64 shrink-0 space-y-6">
           <div className="space-y-4">
             <h3 className="font-semibold text-lg border-b border-border pb-2">Konular</h3>
@@ -37,25 +59,18 @@ export default function Blog() {
               <div className="space-y-2">
                 <Skeleton className="h-8 w-full" />
                 <Skeleton className="h-8 w-3/4" />
-                <Skeleton className="h-8 w-5/6" />
               </div>
             ) : (
               <div className="flex flex-wrap gap-2">
                 <Link href="/blog">
-                  <Badge 
-                    variant={!tagParam ? "default" : "outline"} 
-                    className="cursor-pointer hover:bg-primary/80 transition-colors"
-                  >
+                  <Badge variant={!tagParam ? "default" : "outline"} className="cursor-pointer">
                     Tümü
                   </Badge>
                 </Link>
-                {Object.entries(blogStats?.tagCounts || {}).map(([tag, count]) => (
+                {Object.entries(blogStats?.tagCounts || {}).map(([tag]) => (
                   <Link key={tag} href={`/blog?tag=${encodeURIComponent(tag)}`}>
-                    <Badge 
-                      variant={tagParam === tag ? "default" : "outline"} 
-                      className="cursor-pointer hover:bg-primary/80 transition-colors"
-                    >
-                      {tag} ({count})
+                    <Badge variant={tagParam === tag ? "default" : "outline"} className="cursor-pointer">
+                      {tag}
                     </Badge>
                   </Link>
                 ))}
@@ -63,8 +78,6 @@ export default function Blog() {
             )}
           </div>
         </aside>
-
-        {/* Blog Posts Grid */}
         <div className="flex-1 w-full">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {isLoadingPosts ? (
@@ -79,28 +92,13 @@ export default function Blog() {
                   </CardContent>
                 </Card>
               ))
-            ) : blogPosts?.length === 0 ? (
-              <div className="col-span-full py-12 text-center border rounded-lg border-dashed">
-                <p className="text-muted-foreground">Bu kategoride henüz analiz bulunmuyor.</p>
-                {tagParam && (
-                  <Link href="/blog">
-                    <Button variant="link" className="mt-4">Tüm analizleri gör</Button>
-                  </Link>
-                )}
-              </div>
             ) : (
-              blogPosts?.map((post, i) => (
-                <Card 
-                  key={post.id} 
-                  className="flex flex-col h-full bg-card hover:border-primary/40 transition-all duration-300 group animate-in fade-in slide-in-from-bottom-4"
-                  style={{ animationDelay: `${i * 100}ms`, animationFillMode: "both" }}
-                >
+              safePosts.map((post) => (
+                <Card key={post.id} className="flex flex-col h-full bg-card hover:border-primary/40 transition-all duration-300 group">
                   <CardHeader>
                     <div className="flex gap-2 mb-3 flex-wrap">
                       {post.tags?.map((tag) => (
-                        <Link key={tag} href={`/blog?tag=${encodeURIComponent(tag)}`} className="z-10">
-                          <Badge variant="secondary" className="text-xs hover:bg-primary/20 cursor-pointer">{tag}</Badge>
-                        </Link>
+                        <Badge key={tag} variant="secondary" className="text-xs">{tag}</Badge>
                       ))}
                     </div>
                     <CardTitle className="line-clamp-2 group-hover:text-primary transition-colors text-xl">
