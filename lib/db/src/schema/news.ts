@@ -18,7 +18,6 @@ export const newsPostsTable = pgTable("news_posts", {
   hapHeadline: text("hap_headline"),
   hapContext: text("hap_context"),
   hapImpact: text("hap_impact"),
-  hapNumbers: jsonb("hap_numbers").default([]),
   hapQuote: text("hap_quote"),
   // Etkileşim
   likes: integer("likes").notNull().default(0),
