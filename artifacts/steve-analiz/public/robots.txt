@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://steveanalizweb.onrender.com/api/sitemap.xml
