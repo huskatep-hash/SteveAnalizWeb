@@ -15,11 +15,11 @@ services:
     runtime: node
     plan: free           # upgrade for more resources
     buildCommand: >
-      npm install -g pnpm@9 &&
+      corepack enable pnpm &&
       pnpm install --no-frozen-lockfile --prod=false &&
-      BASE_PATH=/ PORT=3000 NODE_ENV=production pnpm --filter @workspace/steve-analiz run build &&
-      pnpm --filter @workspace/api-server run build &&
-      cp -r artifacts/steve-analiz/dist/public artifacts/api-server/dist/public
+      cd artifacts/steve-analiz && PORT=3000 BASE_PATH=/ pnpm build &&
+      cd ../api-server && pnpm build &&
+      mkdir -p dist/public && cp -r ../steve-analiz/dist/public/* dist/public/
     startCommand: node --enable-source-maps artifacts/api-server/dist/index.mjs
     healthCheckPath: /api/healthz
     envVars:
