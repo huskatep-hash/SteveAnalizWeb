@@ -1,4 +1,4 @@
-# ============================================================
+ # ============================================================
 # Steve Analiz.web — Render.com Blueprint
 # Deploy: connect your GitHub repo at render.com → "New Blueprint"
 # ============================================================
@@ -34,4 +34,4 @@ services:
       - key: SESSION_SECRET
         generateValue: true
       - key: GROQ_API_KEY
-        sync: false
+        sync: false  
