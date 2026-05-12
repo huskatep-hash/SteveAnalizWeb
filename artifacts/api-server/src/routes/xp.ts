@@ -71,13 +71,14 @@ async function awardBadge(userId: number, badgeId: string) {
   } catch {}
 }
 
-router.get("/xp/:userId", async (req: Request, res: Response) => {
+router.get("/xp/:userId", async (req: Request, res: Response): Promise<void> => {
   try {
     const userId = Number(req.params.userId);
     const xpData = await db.select().from(userXpTable).where(eq(userXpTable.userId, userId)).limit(1);
     const badges = await db.select().from(userBadgesTable).where(eq(userBadgesTable.userId, userId));
     if (!xpData.length) {
-      return res.json({ totalXp: 0, level: 1, streakDays: 0, progress: getXPProgress(0), badges: [] });
+      res.json({ totalXp: 0, level: 1, streakDays: 0, progress: getXPProgress(0), badges: [] });
+      return;
     }
     res.json({ ...xpData[0], progress: getXPProgress(xpData[0].totalXp), badges: badges.map(b => b.badgeId) });
   } catch (e: any) {
@@ -85,11 +86,12 @@ router.get("/xp/:userId", async (req: Request, res: Response) => {
   }
 });
 
-router.post("/xp/action", async (req: Request, res: Response) => {
+router.post("/xp/action", async (req: Request, res: Response): Promise<void> => {
   try {
     const { userId, action } = req.body as { userId: number; action: XpAction };
     if (!userId || !action || !(action in XP_REWARDS)) {
-      return res.status(400).json({ error: "Gecersiz istek." });
+      res.status(400).json({ error: "Gecersiz istek." });
+      return;
     }
 
     if (action === "daily_login") {
@@ -98,7 +100,10 @@ router.post("/xp/action", async (req: Request, res: Response) => {
       const existing = await db.select().from(xpLogsTable)
         .where(and(eq(xpLogsTable.userId, userId), eq(xpLogsTable.action, "daily_login"), gte(xpLogsTable.createdAt, today)))
         .limit(1);
-      if (existing.length > 0) return res.json({ message: "Bugun zaten giris yapildi.", xpAmount: 0 });
+      if (existing.length > 0) {
+        res.json({ message: "Bugun zaten giris yapildi.", xpAmount: 0 });
+        return;
+      }
 
       const xpData = await db.select().from(userXpTable).where(eq(userXpTable.userId, userId)).limit(1);
       if (xpData.length > 0) {

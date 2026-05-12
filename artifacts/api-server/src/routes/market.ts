@@ -30,9 +30,12 @@ async function fetchYahooPrice(yahooSymbol: string) {
   return { price, change, changePercent, name, type };
 }
 
-router.get("/market", async (req: Request, res: Response) => {
+router.get("/market", async (req: Request, res: Response): Promise<void> => {
   try {
-    if (cache && Date.now() - cache.time < CACHE_MS) return res.json(cache.data);
+    if (cache && Date.now() - cache.time < CACHE_MS) {
+      res.json(cache.data);
+      return;
+    }
     const results = await Promise.allSettled(
       DEFAULT_SYMBOLS.map(async (s) => {
         const data = await fetchYahooPrice(s.yahooSymbol);
@@ -41,7 +44,7 @@ router.get("/market", async (req: Request, res: Response) => {
     );
     const data = results.map((r, i) => {
       if (r.status === "fulfilled") return r.value;
-      return { symbol: DEFAULT_SYMBOLS[i].symbol, name: DEFAULT_SYMBOLS[i].name, type: DEFAULT_SYMBOLS[i].type, price: 0, change: 0, changePercent: 0, updatedAt: new Date().toISOString(), error: true };
+      return { symbol: DEFAULT_SYMBOLS[i].symbol, name: DEFAULT_SYMBOLS[i].name, type: DEFAULT_SYMBOLS[i].type, price: 0, change: 0, changePercent: 0, updatedAt: new Date().toISOString(), error: "Veri alinamadi" };
     });
     cache = { data, time: Date.now() };
     res.json(data);
@@ -50,7 +53,7 @@ router.get("/market", async (req: Request, res: Response) => {
   }
 });
 
-router.get("/market/search", async (req: Request, res: Response) => {
+router.get("/market/search", async (req: Request, res: Response): Promise<void> => {
   const q = req.query.q as string;
   try {
     const url = "https://query1.finance.yahoo.com/v1/finance/search?q=" + encodeURIComponent(q) + "&quotesCount=8&newsCount=0&listsCount=0";
@@ -68,8 +71,8 @@ router.get("/market/search", async (req: Request, res: Response) => {
   }
 });
 
-router.get("/market/quote/:symbol", async (req: Request, res: Response) => {
-  const { symbol } = req.params;
+router.get("/market/quote/:symbol", async (req: Request, res: Response): Promise<void> => {
+  const symbol = req.params.symbol as string;
   try {
     const data = await fetchYahooPrice(symbol);
     res.json({ symbol, name: data.name, type: data.type, price: data.price, change: data.change, changePercent: data.changePercent, updatedAt: new Date().toISOString() });

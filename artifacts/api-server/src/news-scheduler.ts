@@ -52,8 +52,6 @@ async function gunlukHaberleriCek() {
           status: "draft",
           hapHeadline: article.title ?? null,
           hapContext: article.description ?? null,
-          hapImpact: null,
-          hapNumbers: [],
           hapQuote: null,
         }).returning();
         console.log(`Haber kaydedildi: ${post.id} - ${post.title}`);

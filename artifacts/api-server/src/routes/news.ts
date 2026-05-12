@@ -5,7 +5,7 @@ import { requireAuth } from "../middlewares/auth";
 
 const router: IRouter = Router();
 
-router.get("/news", async (req: Request, res: Response) => {
+router.get("/news", async (req: Request, res: Response): Promise<void> => {
   try {
     const limit = Number(req.query.limit ?? "20");
     const news = await db
@@ -20,21 +20,25 @@ router.get("/news", async (req: Request, res: Response) => {
   }
 });
 
-router.get("/news/:slug", async (req: Request, res: Response) => {
+router.get("/news/:slug", async (req: Request, res: Response): Promise<void> => {
   try {
+    const slug = req.params.slug as string;
     const news = await db
       .select()
       .from(newsPostsTable)
-      .where(eq(newsPostsTable.slug, req.params.slug))
+      .where(eq(newsPostsTable.slug, slug))
       .limit(1);
-    if (!news.length) return res.status(404).json({ error: "Haber bulunamadi." });
+    if (!news.length) {
+      res.status(404).json({ error: "Haber bulunamadi." });
+      return;
+    }
     res.json(news[0]);
   } catch (e: any) {
     res.status(500).json({ error: e.message });
   }
 });
 
-router.post("/news/trigger", requireAuth, async (_req: Request, res: Response) => {
+router.post("/news/trigger", requireAuth, async (_req: Request, res: Response): Promise<void> => {
   res.json({ success: true, message: "Haber tetiklendi, arka planda isleniyor..." });
   try {
     const { gunlukHaberleriCek } = await import("../news-scheduler");
